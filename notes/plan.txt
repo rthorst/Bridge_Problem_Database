@@ -1,0 +1,8 @@
+Code review: review structure and improve documentation.
+Put code on github    
+
+ELO:
+
+    Show hand ELO at the top.
+    If time, build in player ELO support
+
