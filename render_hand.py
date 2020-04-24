@@ -109,7 +109,6 @@ def render_four_hands_with_context(list_of_hands, context=""):
 
     return rendered_hands
 
-
 def ask_for_answer(correct_answer):
     """
     Ask the user for an answer and return whether the answer is correct.
@@ -118,22 +117,66 @@ def ask_for_answer(correct_answer):
         correct_answer (string)
 
     Returns:
-        True if the user specifies a string matching correct_answer.
-        Otherwise False.
+        user_answer (string)
     """
+    
     # Ask the user for an answer.
     msg = "\nYour Answer: "
     user_answer = input(msg)
     
-    # Validate the answer, returning whether the answer is correct.
-    return user_answer == correct_answer
+    return user_answer
+
+def provide_feedback(user_answer, correct_answer):
+    """
+    Provide feedback to the shell.
+
+    Parameters:
+        user_answer (string)
+        correct_answer (string)
+
+    Return true if user_answer == correct_answer.
+    """
+
+    if user_answer == correct_answer:
+        msg = "Correct!"
+    else:
+        msg = "Incorrect! Correct answer is {}".format(correct_answer)
+        msg = "\n".join(textwrap.wrap(msg, 30))
+    
+    print(msg)
+    
+    return None
+
+def render_four_hands_with_context_and_ask_for_answer(list_of_hands, context, correct_answer):
+    """
+    Parameters:
+        
+        list_of_hands, shape (4,)
+        N, W, S, E hands.
+        each hand is a list of cards, e.g. ["CA", "D4", ...]
+
+        context (string). Description of context.
+        e.g. "Contract: 4S. West leads the club king. You win and play which suit from dummy?"
+    
+        correct_answer (string). Correct answer.
+
+    Returns None
+    """
+    rendered_hands_with_context = render_four_hands_with_context(
+            list_of_hands, context)
+    print(rendered_hands_with_context)
+
+    user_answer = ask_for_answer(correct_answer)
+    provide_feedback(user_answer, correct_answer)
+
+    return None
 
 if __name__ == "__main__":
 
     # Render one hand.
     hand = ["CA", "C4", "C3", "C2", "CJ", "DJ", "D6", "D3", "S7", "S6", "S4", "HT", "H8"]
     rendered_hand = render_single_hand(hand)
-    print(rendered_hand)
+    #print(rendered_hand)
 
     # Render four hands.
     north_hand = ["CA", "C4", "C3", "C2", "CJ", "DJ", "D6", "D3", "S7", "S6", "S4", "HT", "H8"]
@@ -143,15 +186,16 @@ if __name__ == "__main__":
     list_of_hands = [north_hand, west_hand, south_hand, east_hand]
 
     rendered_hands = render_four_hands(list_of_hands)
-    print(rendered_hands)
+    #print(rendered_hands)
 
     # Render the same four hands, with context.
     context = """
     Contract: 4S. You win the CK lead in dummy and play which suit?
     """
     rendered_hands_with_context = render_four_hands_with_context(list_of_hands, context)
-    print(rendered_hands_with_context)
+    #print(rendered_hands_with_context)
 
     # Ask for an answer.
     correct_answer = "H"
-    ask_for_answer(correct_answer)
+    render_four_hands_with_context_and_ask_for_answer(list_of_hands,
+            context, correct_answer)
