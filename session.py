@@ -4,12 +4,11 @@ from render_hand import render_four_hands_with_context_and_ask_for_answer
 import sqlite3
 import elo
 
-def connect_to_hand_elo_table():
+def initialize_elo_table():
     """
-    Connect to table storing hand ELOs, creating the table if it does not exist.
+    Create the elo table if it does not exist.
 
-    Parameters: None
-    Returns: sqlite3 connection object.
+    Returns None.
     """
 
     # Connect to database file, creating if not exists.
@@ -23,7 +22,7 @@ def connect_to_hand_elo_table():
     );
     """)
 
-    return conn
+    return None
 
 def load_hands(hands_p="hands.json"):
     """
@@ -174,10 +173,13 @@ def run_session():
     # Load hands in JSON format.
     hands = load_hands()
 
-    # Connect to hand ELO table, creating the table if it
-    # does not exist.
-    conn = connect_to_hand_elo_table()
+    # Connect to the SQL database, creating if it doesn't exist, 
+    conn = sqlite3.connect("bridge_problems.sqlite")
+    
+    # Initialize ELO table.
+    initialize_elo_table()
 
+    # Show hands continuously to the user.
     show_hands_continuously(hands, conn)
 
 if __name__ == "__main__":
