@@ -22,5 +22,21 @@ n_cards     s_cards     e_cards     w_cards     context_text       right_answer
 
 ==== 2. Render hands ====
 
+A single hand can be rendered by:
+    Render each suit one at a time   S: 9, 7, 6      [custom list to sort by K, Q, .... 2]
+    
+Then figure out how to do E, W
+
+
+======== 3. Use text to describe any context =============
+
+Render_hand_with_context method.
+
+
+======= 4. User enters the single card they would play ========
+
+Method to prompt for an answer and validate against the correct answer.
+
+
 
 
