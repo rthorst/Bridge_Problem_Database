@@ -1,12 +1,6 @@
 Now I have a minimum viable project, where I can show you a series of hands and you enter text to play it. Let's now:
 
-Rank the hands.
-
-    (1) Store the ELO of each hand in a database where it can be continuously updated.
-
-    (2) Assign the player a random ELO.
-    (3) After each session, update the ELO of the hand.
     (4) Modify the display to show the ELO of the hand.
-
+    (5) Update the player's elo continuously.
 
 

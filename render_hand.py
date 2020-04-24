@@ -160,7 +160,7 @@ def render_four_hands_with_context_and_ask_for_answer(list_of_hands, context, co
     
         correct_answer (string). Correct answer.
 
-    Returns None
+    Returns True if user_answer is correct_answer, else False.
     """
     rendered_hands_with_context = render_four_hands_with_context(
             list_of_hands, context)
@@ -169,7 +169,7 @@ def render_four_hands_with_context_and_ask_for_answer(list_of_hands, context, co
     user_answer = ask_for_answer(correct_answer)
     provide_feedback(user_answer, correct_answer)
 
-    return None
+    return (user_answer == correct_answer)
 
 if __name__ == "__main__":
 

@@ -2,6 +2,7 @@ import json
 import numpy as np
 from render_hand import render_four_hands_with_context_and_ask_for_answer
 import sqlite3
+import elo
 
 def connect_to_hand_elo_table():
     """
@@ -63,7 +64,40 @@ def ask_see_another_hand_or_quit():
     # Return True if user wants to see another hand.
     return (user_input == "y")
 
-def show_hands_continuously(hands):
+def get_hand_elo(hand_id, conn):
+    """
+    Lookup hand ELO for a given hand ID, creating if not exists.
+
+    Parameters:
+        hand_id (integer) e.g. 2
+        conn (sqlite3 connection object)
+
+    Returns: 
+        elo (integer) e.g. 1200
+    """
+
+    # Look up ELO for this hand.
+    get_elo_statement = """
+    select elo from hand_elo where hand_id = {}
+    """.format(hand_id)
+    res = conn.execute(get_elo_statement).fetchall()
+
+    # If the ELO does not already exist, create it.
+    if len(res) == 0:
+
+        # Insert 1200 ELO for this hand into database.
+        insert_statement = """
+        insert into hand_elo (hand_id, elo) values ({}, {})
+        """.format(hand_id, 1200)
+        conn.execute(insert_statement)
+        conn.commit()
+
+        return 1200
+
+    # Otherwise, return the existing ELO for this hand.
+    return res[0][0]
+
+def show_hands_continuously(hands, conn, player_elo=1200):
     """
     Continuously show hands to the user until the user asks to quit or hands run out.
 
@@ -78,6 +112,10 @@ def show_hands_continuously(hands):
        "correct_answer" : "H",
        "hand_id" : 1
     
+        conn: sqlite3 connection object
+
+        player_elo (int) e.g. 1200: player starting ELO.
+
     Returns:  None
     """
 
@@ -93,8 +131,13 @@ def show_hands_continuously(hands):
         if not user_wants_to_see_another_hand:
             break
 
-        # Show the hand.
+        # Get data for this hand.
         hand_json = hands[hand_index]
+        hand_id = hand_json["hand_id"]
+        hand_elo = get_hand_elo(hand_id, conn)
+        print("old hand elo", hand_elo)
+
+        # Show the hand.
         list_of_hands = [
                 hand_json["n_hand"],
                 hand_json["w_hand"],
@@ -103,8 +146,21 @@ def show_hands_continuously(hands):
                 ]
         context = hand_json["context"]
         correct_answer = hand_json["correct_answer"]
-        render_four_hands_with_context_and_ask_for_answer(list_of_hands, 
+        user_was_correct = render_four_hands_with_context_and_ask_for_answer(
+                list_of_hands, 
                 context, correct_answer)
+
+        # Calculate new player and hand ELO scores.
+        new_player_elo, new_hand_elo = elo.get_new_elos(
+                player_elo, hand_elo, user_was_correct
+                )
+   
+        # Update hand ELO in the database.
+        conn.execute("""
+        update hand_elo set elo = {} where
+        hand_id = {}""".format(new_hand_elo, hand_id)
+        )
+        conn.commit()
 
     # Done message.
     print("Done!")
@@ -119,7 +175,11 @@ def run_session():
     # Load hands in JSON format.
     hands = load_hands()
 
-    show_hands_continuously(hands)
+    # Connect to hand ELO table, creating the table if it
+    # does not exist.
+    conn = connect_to_hand_elo_table()
+
+    show_hands_continuously(hands, conn)
 
 if __name__ == "__main__":
 
