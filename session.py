@@ -1,6 +1,28 @@
 import json 
 import numpy as np
 from render_hand import render_four_hands_with_context_and_ask_for_answer
+import sqlite3
+
+def connect_to_hand_elo_table():
+    """
+    Connect to table storing hand ELOs, creating the table if it does not exist.
+
+    Parameters: None
+    Returns: sqlite3 connection object.
+    """
+
+    # Connect to database file, creating if not exists.
+    conn = sqlite3.connect("bridge_problems.sqlite")
+
+    # Create hand ELO table if not exists.
+    conn.execute("""
+    create table if not exists hand_elo (
+        hand_id serial primary key,
+        elo integer
+    );
+    """)
+
+    return conn
 
 def load_hands(hands_p="hands.json"):
     """
@@ -87,7 +109,16 @@ def show_hands_continuously(hands):
 
     return None
 
+def run_session():
+    """
+    wrapper function to run an entire session.
+    """
+
+    # Load hands in JSON format.
+    hands = load_hands()
+
+    show_hands_continuously(hands)
+
 if __name__ == "__main__":
 
-    hands = load_hands() 
-    show_hands_continuously(hands)
+    run_session()

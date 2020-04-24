@@ -7,7 +7,8 @@
     "e_hand" : ["S9", "S3", "S2", "HA", "HJ", "H7", "H5", "DK", "DQ", "DT", "C9", "C7", "C6"],
     "context" : "Contract: 4 spades. West leads the club King. You win the ace and play which suit?",
     "correct_answer" : "H", 
-    "notes" : "David Bird, 52 great tips on Declarer play. Tip 2 hand 1"
+    "notes" : "David Bird, 52 great tips on Declarer play. Tip 2 hand 1",
+    "hand_id" : 1,
 },
 
 {
@@ -16,7 +17,8 @@
     "w_hand" : ["S9", "S8", "S3", "HT", "H5", "DJ", "D9", "D8", "D6", "D3", "CJ", "C9", "C6"],
     "e_hand" : ["S7", "S4", "HJ", "H9", "H8", "H4", "DK", "DT", "D2", "CA", "CQ", "CT", "C4"],
     "context" : "Contract: 4 spades. You draw trumps in three rounds and play three top hearts ending in dummy, East having 4H. Which suit do you play next?",
-    "correct_answer" : "H"
+    "correct_answer" : "H",
+    "hand_id" : 2
 }
 ]
 

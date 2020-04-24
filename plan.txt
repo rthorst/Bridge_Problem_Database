@@ -2,7 +2,8 @@ Now I have a minimum viable project, where I can show you a series of hands and 
 
 Rank the hands.
 
-    (1) Store hands in a database which can be continuously updated.
+    (1) Store the ELO of each hand in a database where it can be continuously updated.
+
     (2) Assign the player a random ELO.
     (3) After each session, update the ELO of the hand.
     (4) Modify the display to show the ELO of the hand.
