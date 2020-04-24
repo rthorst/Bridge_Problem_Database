@@ -174,7 +174,7 @@ def run_session():
     hands = load_hands()
 
     # Connect to the SQL database, creating if it doesn't exist, 
-    conn = sqlite3.connect("bridge_problems.sqlite")
+    conn = sqlite3.connect("data/bridge_problems.sqlite")
     
     # Initialize ELO table.
     initialize_elo_table()
