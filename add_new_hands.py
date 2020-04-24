@@ -1,7 +1,6 @@
 """
 CLI to add new hands to the dataset efficienctly.
 """
-
 def parse_hand_string_to_list(hand_str):
     """
     Parse a hand string (AKJ, QJ...) to list ["SA", ...]
@@ -61,24 +60,49 @@ def ask_for_hand():
 
     # Query the needed information.
     keys = ["n_hand", "s_hand", "w_hand", "e_hand", "context", "correct_answer", "notes"]
-    labels = ["North Hand (e.g. T83 KQT5 75 QJ38)",
-              "South Hand (e.g. AK5 J94 AKQJT6 A)",
-              "West Hand (e.g. Q964 872 842 972)",
-              "East Hand (e.g. J72 A63 93 KT652)",
-              "Context (optional) e.g. contract and play",
-              "Correct Answer (case sensititive) e.g. H9 or H",
-              "Notes (optional) e.g. From Bridgemaster Level 2 Problem 7"
+    labels = ["North Hand (e.g. T83 KQT5 75 QJ38): ",
+              "South Hand (e.g. AK5 J94 AKQJT6 A): ",
+              "West Hand (e.g. Q964 872 842 972): ",
+              "East Hand (e.g. J72 A63 93 KT652): ",
+              "Context (optional) e.g. contract and play: ",
+              "Correct Answer (case sensititive) e.g. H9 or H: ",
+              "Notes (optional) e.g. From Bridgemaster Level 2 Problem 7:"
             ]
     for key, label in zip(keys, labels):
 
-        value = user_input(label)
-        hand_j[key] = value
+        # Get input from the user.
+        value = input(label)
+
+        # Validate and parse the input provided by user.
+        if key in ["n_hand", "s_hand", "w_hand", "e_hand"]:
+            # this function also validates the input.
+            value = parse_hand_string_to_list(value)
+        else:
+            # validate that input is a strong, but otherwise
+            # no parsing is required.
+            NOT_STRING_ERROR = "a string is required"
+            assert type(value) == type("aa"), NOT_STRING_ERROR
+                        
+        # Add input to the json representation of the hand.
+        hand_json[key] = value
 
     return hand_json
 
+def enter_hands_wrapper():
+    """ wrapper function to enter hands """
+
+    # Load existing hands.
+
+    # While user wants to keep entering hands, enter one 
+    # and assign it the next numerical ID.
+
+    # Write these new hands to the dataset.
 
 if __name__ == "__main__":
 
     hand_str = "T83 KQT5 75 QJ83"
     hand_list = parse_hand_string_to_list(hand_str)
-    print(hand_list)
+    #print(hand_list)
+
+    hand_json = ask_for_hand()
+    #print(hand_json)
