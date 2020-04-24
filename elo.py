@@ -26,7 +26,7 @@ def get_new_elos(old_player_elo, old_hand_elo, user_was_correct, K=30):
     # Calculate new elos, based on K * (outcome - expected).
     # K is a scaling factor, default 30, but this can be adjusted for example upwards for newer players
     # or downwards for older players. 
-    new_player_elo = player_elo + K*(player_outcome_minus_expected)
-    new_hand_elo = hand_elo + K*(hand_outcome_minus_expected)
+    new_player_elo = old_player_elo + K*(player_outcome_minus_expected)
+    new_hand_elo = old_hand_elo + K*(hand_outcome_minus_expected)
 
     return (new_player_elo, new_hand_elo)

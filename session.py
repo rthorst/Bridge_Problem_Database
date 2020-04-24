@@ -135,7 +135,6 @@ def show_hands_continuously(hands, conn, player_elo=1200):
         hand_json = hands[hand_index]
         hand_id = hand_json["hand_id"]
         hand_elo = get_hand_elo(hand_id, conn)
-        print("old hand elo", hand_elo)
 
         # Show the hand.
         list_of_hands = [
