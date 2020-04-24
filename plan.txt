@@ -1,0 +1,26 @@
+The minimum viable project is:
+
+--> 1. Simple way to specify a hand.
+--> 2. Simple rendering of the hands in text.
+--> 3. Use text to describe any context (bidding, play so far, if needed).
+--> 4. User enters the single card they would play (probably types it)
+
+
+==== 1 Specify a bridge hand ====
+
+A hand is an unordered list of cards.
+Cards are given by strings e.g. "HA"
+
+    Suit : "C" "D" "H" "S"
+    Rank : "1" thru "9", "T", "J", "Q", "K"
+
+Also has context.
+
+Also has right answer.
+
+n_cards     s_cards     e_cards     w_cards     context_text       right_answer
+
+==== 2. Render hands ====
+
+
+
