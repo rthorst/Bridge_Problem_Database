@@ -87,6 +87,9 @@ def render_four_hands(list_of_hands):
         line = line.ljust(HAND_WIDTH)
         rendered_hands += ("\n" + TEN_WHITESPACE + line + TEN_WHITESPACE)
 
+    # Remove extraneous line break at the left of the rendered hands.
+    rendered_hands = rendered_hands.lstrip("\n")
+
     return rendered_hands 
 
 def render_four_hands_with_context(list_of_hands, context=""):
