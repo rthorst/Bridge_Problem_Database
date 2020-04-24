@@ -1,6 +1,8 @@
-Now I have a minimum viable project, where I can show you a series of hands and you enter text to play it. Let's now:
+Code review: review structure and improve documentation.
+Put code on github    
 
-    (4) Modify the display to show the ELO of the hand.
-    (5) Update the player's elo continuously.
+ELO:
 
+    Show hand ELO at the top.
+    If time, build in player ELO support
 
