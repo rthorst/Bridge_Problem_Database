@@ -12,7 +12,7 @@ def initialize_elo_table():
     """
 
     # Connect to database file, creating if not exists.
-    conn = sqlite3.connect("bridge_problems.sqlite")
+    conn = sqlite3.connect("data/bridge_problems.sqlite")
 
     # Create hand ELO table if not exists.
     conn.execute("""
@@ -24,7 +24,7 @@ def initialize_elo_table():
 
     return None
 
-def load_hands(hands_p="hands.json"):
+def load_hands(hands_p="data/hands.json"):
     """
     Load hands as a list of json objects.
 
