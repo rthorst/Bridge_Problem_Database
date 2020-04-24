@@ -1,0 +1,24 @@
+[
+
+{
+    "n_hand" : ["S7", "S6", "S4", "HT", "H8", "DJ", "D6", "D3", "CA", "CJ", "C4", "C3", "C2"],
+    "s_hand" : ["SA", "SK", "SJ", "ST", "S5", "HK", "H4", "DA", "D8", "D7", "D5", "D2", "C8"],
+    "w_hand" : ["SQ", "S8", "HQ", "H9", "H6", "H3", "H2", "D9", "D4", "CK", "CQ", "CT", "C5"],
+    "e_hand" : ["S9", "S3", "S2", "HA", "HJ", "H7", "H5", "DK", "DQ", "DT", "C9", "C7", "C6"],
+    "context" : "Contract: 4 spades. West leads the club King. You win the ace and play which suit?",
+    "correct_answer" : "H", 
+    "notes" : "David Bird, 52 great tips on Declarer play. Tip 2 hand 1",
+    "hand_id" : 1
+},
+
+{
+    "n_hand" : ["SQ", "S6", "S2", "HA", "HK", "H6", "H2", "DA", "DQ", "D5", "CK", "C3", "C2"],
+    "s_hand" : ["SA", "SK", "SJ", "ST", "S5", "HQ", "H7", "H3", "D7", "D4", "C8", "C7", "C5"],
+    "w_hand" : ["S9", "S8", "S3", "HT", "H5", "DJ", "D9", "D8", "D6", "D3", "CJ", "C9", "C6"],
+    "e_hand" : ["S7", "S4", "HJ", "H9", "H8", "H4", "DK", "DT", "D2", "CA", "CQ", "CT", "C4"],
+    "context" : "Contract: 4 spades. You draw trumps in three rounds and play three top hearts ending in dummy, East having 4H. Which suit do you play next?",
+    "correct_answer" : "H",
+    "hand_id" : 2
+}
+]
+
