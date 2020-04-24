@@ -36,8 +36,9 @@ def load_hands(hands_p="hands.json"):
        "w_hand" : ["S9", "S8", "S3", "HT", "H5", "DJ", "D9", "D8", "D6", "D3", "CJ", "C9", "C6"],
        "e_hand" : ["S7", "S4", "HJ", "H9", "H8", "H4", "DK", "DT", "D2", "CA", "CQ", "CT", "C4"],
        "context" : "Contract: 4 spades. You draw trumps in three rounds and play three top hearts ending in dummy, East having 4H. Which suit do you play next?",
-       "correct_answer" : "H"
-    """
+       "correct_answer" : "H",
+       "hand_id" : 1
+"""
 
     # Load list of hands.
     hands_str = open(hands_p, "r").read()
@@ -74,7 +75,8 @@ def show_hands_continuously(hands):
        "w_hand" : ["S9", "S8", "S3", "HT", "H5", "DJ", "D9", "D8", "D6", "D3", "CJ", "C9", "C6"],
        "e_hand" : ["S7", "S4", "HJ", "H9", "H8", "H4", "DK", "DT", "D2", "CA", "CQ", "CT", "C4"],
        "context" : "Contract: 4 spades. You draw trumps in three rounds and play three top hearts ending in dummy, East having 4H. Which suit do you play next?",
-       "correct_answer" : "H"
+       "correct_answer" : "H",
+       "hand_id" : 1
     
     Returns:  None
     """
