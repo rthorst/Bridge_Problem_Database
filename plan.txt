@@ -1,0 +1,5 @@
+I need to add more hands. 
+Perhaps add a nice way to programmatically add hands at the shell easily.
+
+
+

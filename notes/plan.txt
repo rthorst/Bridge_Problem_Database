@@ -1,8 +1,17 @@
-Code review: review structure and improve documentation.
-Put code on github    
+1. Function to parse hand into cards.
+    AKJ QJT9 .. . ... --< ["SA", "SK", "DQ", ...]
 
-ELO:
+2. Function to validate data entry.
 
-    Show hand ELO at the top.
-    If time, build in player ELO support
+3. Ability to add data into the hands table.
+
+4. Interact with the user
+
+I have a working MVP that ranks hands and shows a set of them to a user in an interactive way.
+
+I want more hands. How can I get those?
+
+    Make a command line CLI to enter hands efficiently.
+    Then enter all the David Bird Hands.
+
 
