@@ -1,42 +1,11 @@
-The minimum viable project is:
-
---> 1. Simple way to specify a hand.
---> 2. Simple rendering of the hands in text.
---> 3. Use text to describe any context (bidding, play so far, if needed).
---> 4. User enters the single card they would play (probably types it)
+Now I have a minimum viable project, where I can show you one hand and you enter text to play it. 
+Let's build:
 
 
-==== 1 Specify a bridge hand ====
+--> Show you a series of hands. 
 
-A hand is an unordered list of cards.
-Cards are given by strings e.g. "HA"
-
-    Suit : "C" "D" "H" "S"
-    Rank : "1" thru "9", "T", "J", "Q", "K"
-
-Also has context.
-
-Also has right answer.
-
-n_cards     s_cards     e_cards     w_cards     context_text       right_answer
-
-==== 2. Render hands ====
-
-A single hand can be rendered by:
-    Render each suit one at a time   S: 9, 7, 6      [custom list to sort by K, Q, .... 2]
-    
-Then figure out how to do E, W
-
-
-======== 3. Use text to describe any context =============
-
-Render_hand_with_context method.
-
-
-======= 4. User enters the single card they would play ========
-
-Method to prompt for an answer and validate against the correct answer.
-
-
+    (1) Dataset of hands.      [add one more]
+    (2) Hands load from the dataset.   [new script: session.py]. Has functions to load from database.
+    (3) Function to show them one at a time.    [in session: show_hands_continuously()]
 
 
