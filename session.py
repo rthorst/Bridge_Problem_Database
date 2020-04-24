@@ -24,6 +24,17 @@ def initialize_elo_table():
 
     return None
 
+def show_elos(player_elo, hand_elo):
+    """ Display player and hand ELOs, retuning None """
+
+    elo_msg = "\n" + "="*30 + "\n"
+    elo_msg += "Your elo: {:.0f} \t Hand elo: {:.0f}".format(
+            player_elo, hand_elo)
+    elo_msg += "\n" + "="*30
+    print(elo_msg)
+
+    return None
+
 def load_hands(hands_p="data/hands.json"):
     """
     Load hands as a list of json objects.
@@ -134,6 +145,9 @@ def show_hands_continuously(hands, conn, player_elo=1200):
         hand_json = hands[hand_index]
         hand_id = hand_json["hand_id"]
         hand_elo = get_hand_elo(hand_id, conn)
+
+        # Show hand and player ELOs.
+        show_elos(player_elo, hand_elo)
 
         # Show the hand.
         list_of_hands = [
