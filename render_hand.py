@@ -15,7 +15,7 @@ def render_single_hand(list_of_cards):
         C: 976
     """
 
-    # Build the representation one suit at a time.
+    # Build a string representation of the hand, one suit at a time.
     rendered_hand = ""
     SORT_ORDER = {
         "A" : 1,    "K" : 2,   "Q" : 3,   "J" : 4,
@@ -25,16 +25,15 @@ def render_single_hand(list_of_cards):
     }
     for suit in ["S", "H", "D", "C"]:
 
-        # Get all cards in this suit.
+        # Get all cards in this suit, and strip the suit symbol away.
+        # E.g. ["9", "2", "K"]
         cards_in_this_suit = [card for card in list_of_cards if card[0] == suit]
-
-        # Strip the suit symbol away
         cards_in_this_suit = [card[1:] for card in cards_in_this_suit]
         
-        # Sort the cards in "card" order, e.g. A, K, Q, ..T, 9, ...2.
+        # Sort the cards in this suit in "card" order, e.g. A first, K, .... 2.
         cards_in_this_suit.sort(key=lambda card: SORT_ORDER[card])
 
-        # Add the sorted cards to the string hand.
+        # Add the sorted cards to the rendered_hand.
         this_line = "\n{}: ".format(suit)
         for card in cards_in_this_suit:
             this_line += card
@@ -44,30 +43,36 @@ def render_single_hand(list_of_cards):
 
 def render_four_hands(list_of_hands):
     """
-    Render four hands in string representation.
+    Render four hands as a string representation.
 
-    Input:
+    Parameters:
+        
         list_of_hands, shape (4,)
-        N, W, S, E hands.
-        each hand is a list of cards, e.g. ["CA", "D4", ...]
-    Output: rendered_hands  (string)
+            N, W, S, E hands.
+            each hand is a list of cards, e.g. ["CA", "D4", ...]
+    
+    Returns: 
+    
+        rendered_hands  (string)
+            This is a full hand diagram.
     """
 
-    # Parse input hands.
+    # Extract the individual hands from the input, list_of_hands.
     north_hand, west_hand, south_hand, east_hand = list_of_hands
     
-    # Render the hands one at a time.
+    # Render the individual hands, one at a time.
     rendered_hands = ""
     HAND_WIDTH = 10 # number of characters to pad each hand to.
     TEN_WHITESPACE = " "*10
 
-    # North.
+    # The north hand is simply centered with whitespace on the left and right.
     north_hand_rendered = render_single_hand(north_hand)
     for line in north_hand_rendered.split("\n"):
         line = line.ljust(HAND_WIDTH)
         rendered_hands += ("\n" + TEN_WHITESPACE + line + TEN_WHITESPACE)
         
-    # West and East. 
+    # The west and east hands are rendered next on either side, with whitespace
+    # in the middle.
     west_hand_rendered = render_single_hand(west_hand)
     east_hand_rendered = render_single_hand(east_hand)
     for west_line, east_line in zip(west_hand_rendered.split("\n"), 
@@ -76,7 +81,7 @@ def render_four_hands(list_of_hands):
         east_line = east_line.ljust(HAND_WIDTH)
         rendered_hands += ("\n" + west_line + TEN_WHITESPACE + east_line)
     
-    # South.
+    # The south hand is centered with whitespace on the left and right.
     south_hand_rendered = render_single_hand(south_hand)
     for line in south_hand_rendered.split("\n"):
         line = line.ljust(HAND_WIDTH)
@@ -100,7 +105,7 @@ def render_four_hands_with_context(list_of_hands, context=""):
     # Render the four hands as a hand diagram (string).
     rendered_hands = render_four_hands(list_of_hands)
 
-    # Add the optional context.
+    # Add the optional context below with leading whitespace.
     if len(context) > 0:
 
         context = context.lstrip()
@@ -128,7 +133,7 @@ def ask_for_answer(correct_answer):
 
 def provide_feedback(user_answer, correct_answer):
     """
-    Provide feedback to the shell.
+    Provide feedback to the user, currently logging feedback to the shell.
 
     Parameters:
         user_answer (string)
