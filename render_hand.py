@@ -23,7 +23,7 @@ def render_single_hand(list_of_cards):
         "6" : 9,    "5" : 10,   "4" : 11,   "3" : 12,
         "2" : 12
     }
-    for suit in ["C", "D", "H", "S"]:
+    for suit in ["S", "H", "D", "C"]:
 
         # Get all cards in this suit.
         cards_in_this_suit = [card for card in list_of_cards if card[0] == suit]
@@ -54,8 +54,8 @@ def render_four_hands(list_of_hands):
     """
 
     # Parse input hands.
-    N_hand, W_hand, S_hand, E_hand = list_of_hands
-
+    north_hand, west_hand, south_hand, east_hand = list_of_hands
+    
     # Render the hands one at a time.
     rendered_hands = ""
     HAND_WIDTH = 10 # number of characters to pad each hand to.

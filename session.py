@@ -1,6 +1,6 @@
 import json 
 import numpy as np
-
+from render_hand import render_four_hands_with_context_and_ask_for_answer
 
 def load_hands(hands_p="hands.json"):
     """
@@ -23,6 +23,23 @@ def load_hands(hands_p="hands.json"):
 
     return hands_json
 
+def ask_see_another_hand_or_quit():
+    """ 
+    ask the user whether they want to see another hand or quit. 
+    
+    parameters: none
+    returns: True if the user wants to see another hand.
+    """
+
+    # Ask the user whether they want to see another hand.
+    msg = "See another hand? y/n"
+    user_input = ""
+    while user_input not in ["y", "n"]:
+        user_input = input(msg)
+
+    # Return True if user wants to see another hand.
+    return (user_input == "y")
+
 def show_hands_continuously(hands):
     """
     Continuously show hands to the user until the user asks to quit or hands run out.
@@ -41,9 +58,34 @@ def show_hands_continuously(hands):
     """
 
     # Randomize order of showing hands.
-    indices = np.arange(len(hands), dtype=np.int8)
-    np.random.shuffle(indices)
-    print(indices)
+    hand_indices = np.arange(len(hands), dtype=np.int8)
+    np.random.shuffle(hand_indices)
+
+    # Show hands in random order until the user asks to stop.
+    for hand_index in hand_indices:
+
+        # Ask the user if they want to see another hand.
+        user_wants_to_see_another_hand = ask_see_another_hand_or_quit()
+        if not user_wants_to_see_another_hand:
+            break
+
+        # Show the hand.
+        hand_json = hands[hand_index]
+        list_of_hands = [
+                hand_json["n_hand"],
+                hand_json["w_hand"],
+                hand_json["s_hand"],
+                hand_json["e_hand"]
+                ]
+        context = hand_json["context"]
+        correct_answer = hand_json["correct_answer"]
+        render_four_hands_with_context_and_ask_for_answer(list_of_hands, 
+                context, correct_answer)
+
+    # Done message.
+    print("Done!")
+
+    return None
 
 if __name__ == "__main__":
 
