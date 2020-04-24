@@ -63,13 +63,13 @@ def ask_for_hand():
 
     # Query the needed information.
     keys = ["n_hand", "s_hand", "w_hand", "e_hand", "context", "correct_answer", "notes"]
-    labels = ["North Hand (e.g. T83 KQT5 75 QJ38): ",
-              "South Hand (e.g. AK5 J94 AKQJT6 A): ",
-              "West Hand (e.g. Q964 872 842 972): ",
-              "East Hand (e.g. J72 A63 93 KT652): ",
-              "Context (optional) e.g. contract and play: ",
-              "Correct Answer (case sensititive) e.g. H9 or H: ",
-              "Notes (optional) e.g. From Bridgemaster Level 2 Problem 7:"
+    labels = ["North Hand (e.g. T83 KQT5 75 QJ38):  ",
+              "South Hand (e.g. AK5 J94 AKQJT6 A):  ",
+              "West Hand (e.g. Q964 872 842 972):  ",
+              "East Hand (e.g. J72 A63 93 KT652):  ",
+              "Context (optional) e.g. contract and play:  ",
+              "Correct Answer (case sensititive) e.g. H9 or H:  ",
+              "Notes (optional) e.g. From Bridgemaster Level 2 Problem 7:  "
             ]
     for key, label in zip(keys, labels):
 
@@ -99,7 +99,10 @@ def enter_hands_wrapper():
     f = open(data_p, "r")
     hands_json = json.loads(f.read())
 
-    # While user wants to keep entering hands, enter one 
+    # Back up the old hands.
+    os.system("cp data/hands.json data/hands_backup.json")
+
+# While user wants to keep entering hands, enter one 
     # and assign it the next numerical ID.
     done = False
     last_hand_id = hands_json[-1]["hand_id"]
@@ -108,7 +111,7 @@ def enter_hands_wrapper():
         # Ask the user if they want to enter another hand.
         continue_input = ""
         while continue_input not in ["y", "n"]:
-            continue_input = input("Enter another hand? y/n")
+            continue_input = input("Enter another hand? y/n:  ")
         if continue_input == "n":
             done = True
             break
@@ -124,11 +127,10 @@ def enter_hands_wrapper():
         # Add this new hand to the data structure containing all hands.
         hands_json.append(hand_json)
 
-    # Write these new hands to the dataset, backing up the old hands.
-    os.system("cp data/hands.json data/hands_backup.json")
-    with open("data/hands.json", "w") as of:
-        out = json.dumps(hands_json)
-        of.write(out)
+        # Write the updated hands to the dataset.
+        with open("data/hands.json", "w") as of:
+            out = json.dumps(hands_json)
+            of.write(out)
 
 if __name__ == "__main__":
 
