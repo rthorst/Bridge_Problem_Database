@@ -1,6 +1,9 @@
 """
 CLI to add new hands to the dataset efficienctly.
 """
+import json
+import os
+
 def parse_hand_string_to_list(hand_str):
     """
     Parse a hand string (AKJ, QJ...) to list ["SA", ...]
@@ -92,11 +95,40 @@ def enter_hands_wrapper():
     """ wrapper function to enter hands """
 
     # Load existing hands.
+    data_p = os.path.join("data", "hands.json")
+    f = open(data_p, "r")
+    hands_json = json.loads(f.read())
 
     # While user wants to keep entering hands, enter one 
     # and assign it the next numerical ID.
+    done = False
+    last_hand_id = hands_json[-1]["hand_id"]
+    while not done:
 
-    # Write these new hands to the dataset.
+        # Ask the user if they want to enter another hand.
+        continue_input = ""
+        while continue_input not in ["y", "n"]:
+            continue_input = input("Enter another hand? y/n")
+        if continue_input == "n":
+            done = True
+            break
+
+        # Have the user enter the new hand, and parse the
+        # results as a json. 
+        hand_json = ask_for_hand()
+
+        # Assign the current hand the next numerical ID in sequence.
+        hand_json["hand_id"] = last_hand_id + 1
+        last_hand_id += 1
+
+        # Add this new hand to the data structure containing all hands.
+        hands_json.append(hand_json)
+
+    # Write these new hands to the dataset, backing up the old hands.
+    os.system("cp data/hands.json data/hands_backup.json")
+    with open("data/hands.json", "w") as of:
+        out = json.dumps(hands_json)
+        of.write(out)
 
 if __name__ == "__main__":
 
@@ -104,5 +136,7 @@ if __name__ == "__main__":
     hand_list = parse_hand_string_to_list(hand_str)
     #print(hand_list)
 
-    hand_json = ask_for_hand()
+    #hand_json = ask_for_hand()
     #print(hand_json)
+
+    enter_hands_wrapper()
