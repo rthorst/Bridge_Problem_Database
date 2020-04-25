@@ -132,6 +132,9 @@ def enter_hands_wrapper():
             out = json.dumps(hands_json)
             of.write(out)
 
+        # Update the user on how many hands are currently in the database.
+        print("Hands currently in the database: ", len(hands_json))
+
 if __name__ == "__main__":
 
     hand_str = "T83 KQT5 75 QJ83"
