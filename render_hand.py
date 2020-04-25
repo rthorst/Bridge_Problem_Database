@@ -118,8 +118,9 @@ def render_four_hands_with_context(list_of_hands, context=""):
     return rendered_hands
 
 def ask_for_answer(correct_answer):
+    # TODO remove the correct_answer parameter which is not necessary.
     """
-    Ask the user for an answer and return whether the answer is correct.
+    Ask the user for an answer and return that answer.
 
     Parameters:
         correct_answer (string)
@@ -145,7 +146,11 @@ def provide_feedback(user_answer, correct_answer):
     Return true if user_answer == correct_answer.
     """
 
-    if user_answer == correct_answer:
+    # Test if answer is an exact string match, ignoring case 
+    # and ignoring extra whitespace.
+    user_answer_preprocessed = user_answer.lower().lstrip().rstrip()
+    correct_answer_preprocessed = correct_answer.lower()
+    if user_answer_preprocessed == correct_answer_preprocessed:
         msg = "Correct!"
     else:
         msg = "Incorrect! Correct answer is {}".format(correct_answer)
