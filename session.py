@@ -158,9 +158,12 @@ def show_hands_continuously(hands, conn, player_elo=1200):
                 ]
         context = hand_json["context"]
         correct_answer = hand_json["correct_answer"]
+        hidden_hands = hand_json["hidden_hands"]
         user_was_correct = render_four_hands_with_context_and_ask_for_answer(
-                list_of_hands, 
-                context, correct_answer)
+                list_of_hands=list_of_hands, 
+                context=context,
+                correct_answer=correct_answer,
+                hidden_hands=hidden_hands)
 
         # Calculate new player and hand ELO scores.
         new_player_elo, new_hand_elo = elo.get_new_elos(
