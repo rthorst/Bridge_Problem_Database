@@ -127,6 +127,7 @@ def enter_hands_wrapper():
         continue_input = ""
         while continue_input not in ["y", "n"]:
             continue_input = input("Enter another hand? y/n:  ")
+            continue_input = continue_input.lower() # case insensitive.
         if continue_input == "n":
             done = True
             break
