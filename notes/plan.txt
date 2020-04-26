@@ -1,3 +1,7 @@
--- Create a better looking frontend, streamlit. Hands in markdown.
--- Get to 50-100 hands.
+-- better frontend
+-- more hands.
 
+Hide hands:
+1) Write code to hide hands when rendering.
+2) Update code to add new hand to DB to query which hands to hide 
+3) Update existing hands in DB.
