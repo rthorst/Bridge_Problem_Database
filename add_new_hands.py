@@ -54,7 +54,8 @@ def ask_for_hand():
         "context" : "Contract: 4 spades. You draw trumps in three rounds and play 
         three top hearts ending in dummy, East having 4H. Which suit do you play next?",
         "correct_answer" : "H",
-        "hand_id" : 1
+        "hand_id" : 1,
+        "hidden_hands" : "NS"
         }
     """
 
@@ -62,13 +63,15 @@ def ask_for_hand():
     hand_json = {}
 
     # Query the needed information.
-    keys = ["n_hand", "s_hand", "w_hand", "e_hand", "context", "correct_answer", "notes"]
+    keys = ["n_hand", "s_hand", "w_hand", "e_hand", "context",
+            "correct_answer", "hidden_hands", "notes"]
     labels = ["North Hand (e.g. T83 KQT5 75 QJ38):  ",
               "South Hand (e.g. AK5 J94 AKQJT6 A):  ",
               "West Hand (e.g. Q964 872 842 972):  ",
               "East Hand (e.g. J72 A63 93 KT652):  ",
               "Context (optional) e.g. contract and play:  ",
               "Correct Answer (case sensititive) e.g. H9 or H:  ",
+              "Hidden Hands (optional) e.g. NSE or enter to continue:  ",
               "Notes (optional) e.g. From Bridgemaster Level 2 Problem 7:  "
             ]
     for key, label in zip(keys, labels):
@@ -80,6 +83,18 @@ def ask_for_hand():
         if key in ["n_hand", "s_hand", "w_hand", "e_hand"]:
             # this function also validates the input.
             value = parse_hand_string_to_list(value)
+        elif key == "hidden_hands":
+        
+            # check for string.
+            NOT_STRING_ERROR = "a string is required"
+            assert type(value) == type("aa"), NOT_STRING_ERROR
+        
+            # check only characters are NSEW.
+            INVALID_HIDDEN_HANDS_ERROR = """
+            hidden_hands can only include the letters NSEW
+            """
+            for c in value:
+                assert c.lower() in 'nsew', INVALID_HIDDEN_HANDS_ERROR
         else:
             # validate that input is a strong, but otherwise
             # no parsing is required.
