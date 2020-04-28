@@ -193,6 +193,67 @@ def enter_hands_wrapper():
         # Update the user on how many hands are currently in the database.
         print("Hands currently in the database: ", len(hands_json))
 
+
+def edit_hands_wrapper():
+
+    # Load dataset.
+    data_p = os.path.join("..", "data", "hands.json")
+    f = open(data_p, "r")
+    hands_j = json.loads(f.read())
+
+    # Map rows in the JSON to the relevant hand_ids.
+    # Index = row in json, value = hand id. 
+    hand_ids = [j["hand_id"] for j in hands_j]
+
+    # Ask the user if they want to make another change.
+    # While they want to make changes, accept changes one 
+    # at a time and commit them to the database.
+    done = False
+    while not done:
+
+        # Ask the user if they want to make another change.
+        wants_to_continue = None
+        while wants_to_continue not in ["y", "n"]:
+                wants_to_continue = input("keep editing hands? y/n:  ")
+        if wants_to_continue == "n":
+            done = True
+            break
+
+        # Ask which hand to edit.
+        hand_id_to_edit = input("which hand id would you like to edit?:  ")
+        try:
+            hand_id_to_edit = int(hand_id_to_edit)
+        except:
+            raise Exception("hand id cannot be understood as an integer")
+        
+        INVALID_HAND_ID_ERROR = "hand id does not exist"
+        assert hand_id_to_edit in hand_ids, INVALID_HAND_ID_ERROR
+
+        # Ask which key to edit.
+        key_to_edit = input("which key would you like to edit?:  ")
+        valid_keys = ["n_hand", "s_hand", "e_hand", "w_hand", "context", "notes", "correct_answer"]
+        INVALID_KEY_ERROR = "key cannot be understood as one of ".format(valid_keys)
+        assert key_to_edit in valid_keys, INVALID_KEY_ERROR
+
+        # Prompt user for the new value associated with this key,
+        # and validate/parse the new value.
+        # this will raise an exception if invalid, otherwise, the 
+        # parsed representation will be returned.
+        new_value = input("what should the new value be?:  ")
+        new_value = validate_and_parse(key, new_value)
+
+        # Update the hand value and write changes to the database.
+        json_index_to_update = hand_ids.index(hand_id_to_edit)
+        hands_j[json_index_to_update][key_to_edit] = new_value
+
+        # Back-up the old database.
+        os.system("cp ../data/hands.json ../data/hands_backup.json")
+
+        # Write the results to the database.
+        with open("../data/hands.json", "w") as of:
+            of.write(json.dumps(hands_json))
+
+
 if __name__ == "__main__":
 
     hand_str = "T83 KQT5 75 QJ83"
@@ -202,4 +263,5 @@ if __name__ == "__main__":
     #hand_json = ask_for_hand()
     #print(hand_json)
 
-    enter_hands_wrapper()
+    #enter_hands_wrapper()
+    edit_hands_wrapper()
