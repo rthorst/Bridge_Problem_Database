@@ -1,7 +1,20 @@
--- better frontend
--- more hands.
+1.
 
-Hide hands:
-1) Write code to hide hands when rendering.
-2) Update code to add new hand to DB to query which hands to hide 
-3) Update existing hands in DB.
+The user should be able to edit hands in the database.
+
+Input :
+Hand ID
+Key to edit.
+
+Enter new value for the key.
+
+Validate it as before.
+
+
+This implies I should create a function validate(key, value) which knows all my keys and validates.
+It should work for editing fields in the DB and also for entering them in the first place. 
+This is the key extension here.
+
+
+2.
+We should run in MongoDB, a json-like NoSQL database

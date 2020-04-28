@@ -34,6 +34,63 @@ def parse_hand_string_to_list(hand_str):
 
     return hand_list
 
+def validate_and_parse(key, value):
+    """
+    Validate and parse a given (key, value) pair.
+    If vaild, return the parsed value.
+    Otherwise, raise a descriptive exception.
+
+    Parameters:
+        key (string) e.g. "n_hand"
+        value (flexible type) e.g. "KQT AJ54 932 872"
+    Returns: 
+        parsed_value (flexible type) the parsed representation of the value.
+        If invalid, instead returns None and raises an Exception.
+    """
+
+    # Possible exceptions to raise.
+    NOT_STRING_ERROR = "a string is required"
+    NOT_INTEGER_ERROR = "an integer is required"
+    INVALID_HIDDEN_HANDS_ERROR = """
+    hidden hands can include only the letters NSEW
+    """
+    INVALID_KEY_ERROR = "key not understood"
+
+    # Validate hands: check it can be parsed into 4 suits with 13 cards.
+    if key in ["n_hand", "s_hand", "w_hand", "e_hand"]:
+        # This function will raise an exception if the hand is invalid.
+        parsed_value = parse_hand_string_to_list(value)
+    
+    # Validate hidden hands: string with NSEW only.
+    elif key == "hidden_hands":
+    
+        # check for string.
+        assert type(value) == type("aa"), NOT_STRING_ERROR
+    
+        # check only characters are NSEW.
+        for c in value:
+            assert c.lower() in 'nsew', INVALID_HIDDEN_HANDS_ERROR
+
+        # parsed_value is simply a copy of the inputted value.
+        parsed_value = value
+
+    # Validate context and correct answer, which simply must be strings.
+    elif key in ["context", "correct_answer"]:
+        assert type(value) == type("aa"), NOT_STRING_ERROR
+        parsed_value = value
+
+    # Validate hand ID, which simply must be integer.
+    elif key in ["hand_id"]:
+        assert type(value) == type(1), NOT_INTEGER_ERROR
+        parsed_value = value
+        
+    # Unrecognized keys.
+    else:
+        raise Exception(INVALID_KEY_ERROR)
+
+    return parsed_value
+        
+
 def ask_for_hand():
     """
     Ask user to enter a hand on the command line and return
@@ -80,27 +137,12 @@ def ask_for_hand():
         value = input(label)
 
         # Validate and parse the input provided by user.
-        if key in ["n_hand", "s_hand", "w_hand", "e_hand"]:
-            # this function also validates the input.
-            value = parse_hand_string_to_list(value)
-        elif key == "hidden_hands":
-        
-            # check for string.
-            NOT_STRING_ERROR = "a string is required"
-            assert type(value) == type("aa"), NOT_STRING_ERROR
-        
-            # check only characters are NSEW.
-            INVALID_HIDDEN_HANDS_ERROR = """
-            hidden_hands can only include the letters NSEW
-            """
-            for c in value:
-                assert c.lower() in 'nsew', INVALID_HIDDEN_HANDS_ERROR
-        else:
-            # validate that input is a strong, but otherwise
-            # no parsing is required.
-            NOT_STRING_ERROR = "a string is required"
-            assert type(value) == type("aa"), NOT_STRING_ERROR
-                        
+        # If the value is invalid or the key is unrecognized, a
+        # discriptive exception will be raised. Otherwise, appropriate
+        # parsing will be performed, for example parsing the hand into 
+        # a listof 13 cards.
+        value = validate_and_parse(key, value)
+
         # Add input to the json representation of the hand.
         hand_json[key] = value
 
