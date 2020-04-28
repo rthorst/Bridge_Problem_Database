@@ -29,7 +29,7 @@ def parse_hand_string_to_list(hand_str):
             card_str_with_suit = suit_prefix + card_str_without_suit
             hand_list.append(card_str_with_suit)
 
-    NOT_13_CARDS_ERROR_MSG = "hand cannt be parsed into 13 cards"
+    NOT_13_CARDS_ERROR_MSG = "hand cannot be parsed into 13 cards"
     assert len(hand_list) == 13, NOT_13_CARDS_ERROR_MSG
 
     return hand_list
