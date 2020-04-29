@@ -197,7 +197,7 @@ def enter_hands_wrapper():
 def edit_hands_wrapper():
 
     # Load dataset.
-    data_p = os.path.join("..", "data", "hands.json")
+    data_p = os.path.join("data", "hands.json")
     f = open(data_p, "r")
     hands_j = json.loads(f.read())
 
@@ -235,24 +235,57 @@ def edit_hands_wrapper():
         INVALID_KEY_ERROR = "key cannot be understood as one of ".format(valid_keys)
         assert key_to_edit in valid_keys, INVALID_KEY_ERROR
 
+        # Show the old value of this key.
+        json_index_to_update = hand_ids.index(hand_id_to_edit)
+        old_value = hands_j[json_index_to_update][key_to_edit]
+        OLD_VALUE_MSG = """
+        The old value of this key was:
+        {}
+        """.format(old_value)
+        print(OLD_VALUE_MSG)
+
         # Prompt user for the new value associated with this key,
         # and validate/parse the new value.
         # this will raise an exception if invalid, otherwise, the 
         # parsed representation will be returned.
         new_value = input("what should the new value be?:  ")
-        new_value = validate_and_parse(key, new_value)
+        new_value = validate_and_parse(key_to_edit, new_value)
 
         # Update the hand value and write changes to the database.
-        json_index_to_update = hand_ids.index(hand_id_to_edit)
         hands_j[json_index_to_update][key_to_edit] = new_value
 
         # Back-up the old database.
-        os.system("cp ../data/hands.json ../data/hands_backup.json")
+        os.system("cp data/hands.json data/hands_backup.json")
 
         # Write the results to the database.
-        with open("../data/hands.json", "w") as of:
-            of.write(json.dumps(hands_json))
+        with open("data/hands.json", "w") as of:
+            of.write(json.dumps(hands_j))
 
+def ask_to_add_or_edit():
+    """
+    Ask user whether they want to add a new hand or edit existing hands,
+    this serves as a wrapper around the main functions in this module, 
+    enter_hands_wrapper() and edit_hands_wrapper()
+    
+    Returns None
+    """
+
+    desired_task = None
+    while desired_task not in ["a", "e", "q"]:
+        PROMPT = """
+        Would you like to add a new hand [a],
+        edit an existing hand [e], 
+        or quit [q]? 
+        Enter a, e, or q:\n
+        """
+        desired_task = input(PROMPT)
+
+    if desired_task == "a": # add new hand
+        enter_hands_wrapper()
+    elif desired_task == "e": # edit hand.
+        edit_hands_wrapper()
+    else: # "q" , quit.
+        return None
 
 if __name__ == "__main__":
 
@@ -264,4 +297,6 @@ if __name__ == "__main__":
     #print(hand_json)
 
     #enter_hands_wrapper()
-    edit_hands_wrapper()
+    #edit_hands_wrapper()
+    ask_to_add_or_edit()
+
