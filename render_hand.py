@@ -50,7 +50,7 @@ def render_single_hand(list_of_cards, hidden=False):
         cards_in_this_suit.sort(key=lambda card: SORT_ORDER[card])
 
         # Add the sorted cards to the rendered_hand.
-        this_line = "\n{}: ".format(suit_string_to_markdown[suit])
+        this_line = "\n{} ".format(suit_string_to_markdown[suit])
         for card in cards_in_this_suit:
             this_line += card
         rendered_hand += this_line
@@ -222,9 +222,7 @@ if __name__ == "__main__":
     # Render one hand.
     hand = ["CA", "C4", "C3", "C2", "CJ", "DJ", "D6", "D3", "S7", "S6", "S4", "HT", "H8"]
     rendered_hand = render_single_hand(hand, hidden=False)
-    print(rendered_hand)
-    import time
-    time.sleep(555)
+    #print(rendered_hand)
 
     # Render four hands.
     north_hand = ["CA", "C4", "C3", "C2", "CJ", "DJ", "D6", "D3", "S7", "S6", "S4", "HT", "H8"]
@@ -248,6 +246,7 @@ if __name__ == "__main__":
             list_of_hands=list_of_hands,
             context=context,
             hidden_hands=hidden_hands)
+    print("start hand w context")
     print(rendered_hands_with_context)
 
     # Ask for an answer.
