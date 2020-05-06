@@ -157,9 +157,6 @@ def enter_hands_wrapper():
     db = client["bridge_problem_database"]
     hands_collection = db["hands"]
 
-    # Back up the old hands.
-    os.system("cp data/hands.json data/hands_backup.json")
-
     # While user wants to keep entering hands, enter one 
     done = False
     last_hand_id = hands_json[-1]["hand_id"]
@@ -178,32 +175,20 @@ def enter_hands_wrapper():
         # results as a json. 
         hand_json = ask_for_hand()
 
-        # Assign the current hand the next numerical ID in sequence.
-        hand_json["hand_id"] = last_hand_id + 1
-        last_hand_id += 1
-
-        # Add this new hand to the data structure containing all hands.
-        hands_json.append(hand_json)
-
-        # Write the updated hands to the dataset.
-        with open("data/hands.json", "w") as of:
-            out = json.dumps(hands_json)
-            of.write(out)
+        # Add the new hand to the MongoDB database.
+        hands_collection.insert_one(hand_json)
 
         # Update the user on how many hands are currently in the database.
-        print("Hands currently in the database: ", len(hands_json))
+        print("Hands currently in the database: ", 
+                hands_collection.count_documents({}))
 
 
 def edit_hands_wrapper():
 
-    # Load dataset.
-    data_p = os.path.join("data", "hands.json")
-    f = open(data_p, "r")
-    hands_j = json.loads(f.read())
-
-    # Map rows in the JSON to the relevant hand_ids.
-    # Index = row in json, value = hand id. 
-    hand_ids = [j["hand_id"] for j in hands_j]
+    # Load existing hands.
+    client = pymongo.MongoClient()
+    db = client["bridge_problem_database"]
+    hands_collection = db["hands"]
 
     # Ask the user if they want to make another change.
     # While they want to make changes, accept changes one 
@@ -225,7 +210,9 @@ def edit_hands_wrapper():
             hand_id_to_edit = int(hand_id_to_edit)
         except:
             raise Exception("hand id cannot be understood as an integer")
-        
+
+        #TODO stopped here. 
+        # Need to list valid hand IDs from mongo db.
         INVALID_HAND_ID_ERROR = "hand id does not exist"
         assert hand_id_to_edit in hand_ids, INVALID_HAND_ID_ERROR
 
