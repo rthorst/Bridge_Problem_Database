@@ -20,8 +20,10 @@ def show_hand_header(player_elo, hand_elo):
     return None
 
 def load_hands():
-    """
-    Load hands as a list of json objects.
+    """Load hands list of json objects.
+
+    The hands are loaded from the PyMongo database bridge_problem_database,
+    collection "hands"
 
     Output: hands, json[]. Example:
 
@@ -31,15 +33,19 @@ def load_hands():
        "e_hand" : ["S7", "S4", "HJ", "H9", "H8", "H4", "DK", "DT", "D2", "CA", "CQ", "CT", "C4"],
        "context" : "Contract: 4 spades. You draw trumps in three rounds and play three top hearts ending in dummy, East having 4H. Which suit do you play next?",
        "correct_answer" : "H",
-       "hand_id" : 1
-"""
+       "_id" : hexadecimal id object,
+       "elo" : 1200
 
-    # Connect to PyMongo database.
+    Todo, as a future direction this function may be eliminated. It should be possible to randomly
+    query the hands directly as a MongoDB cursor object. No python lists needed.
+    """
+
+    # Connect to PyMongo database which stores the hands.
     client = pymongo.MongoClient()
     db = client["bridge_problem_database"]
     hands_collection = db["hands"]
     
-    # Get all hands as a list of JSON objects.
+    # Get all hands from the database, as a list of JSON objects.
     all_hands = hands_collection.find({})
     hands_json = list(all_hands)
     
@@ -62,39 +68,6 @@ def ask_see_another_hand_or_quit():
     # Return True if user wants to see another hand.
     return (user_input == "y")
 
-def get_hand_elo(hand_id):
-    """
-    Lookup hand ELO for a given hand ID, creating if not exists.
-
-    Parameters:
-        hand_id (integer) e.g. 2
-        conn (sqlite3 connection object)
-
-    Returns: 
-        elo (integer) e.g. 1200
-    """
-
-    # Look up ELO for this hand.
-    get_elo_statement = """
-    select elo from hand_elo where hand_id = {}
-    """.format(hand_id)
-    res = conn.execute(get_elo_statement).fetchall()
-
-    # If the ELO does not already exist, create it.
-    if len(res) == 0:
-
-        # Insert 1200 ELO for this hand into database.
-        insert_statement = """
-        insert into hand_elo (hand_id, elo) values ({}, {})
-        """.format(hand_id, 1200)
-        conn.execute(insert_statement)
-        conn.commit()
-
-        return 1200
-
-    # Otherwise, return the existing ELO for this hand.
-    return res[0][0]
-
 def show_hands_continuously(hands, player_elo=1200):
     """
     Continuously show hands to the user until the user asks to quit or hands run out.
@@ -108,8 +81,9 @@ def show_hands_continuously(hands, player_elo=1200):
        "e_hand" : ["S7", "S4", "HJ", "H9", "H8", "H4", "DK", "DT", "D2", "CA", "CQ", "CT", "C4"],
        "context" : "Contract: 4 spades. You draw trumps in three rounds and play three top hearts ending in dummy, East having 4H. Which suit do you play next?",
        "correct_answer" : "H",
-       "hand_id" : 1
-    
+       "elo" : 1200,
+       "_id" : hexadecimal ID object.
+
         conn: sqlite3 connection object
 
         player_elo (int) e.g. 1200: player starting ELO.
