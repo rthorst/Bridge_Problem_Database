@@ -123,6 +123,8 @@ def ask_for_hand():
     hand_json = {}
 
     # Query the needed information.
+    # Note that we assign a default ELO of 1200 to the hand
+    # rather than allow the user to enter this information.
     keys = ["n_hand", "s_hand", "w_hand", "e_hand", "context",
             "correct_answer", "hidden_hands", "notes"]
     labels = ["North Hand (e.g. T83 KQT5 75 QJ38):  ",
