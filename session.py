@@ -4,19 +4,16 @@ from render_hand import render_four_hands_with_context_and_ask_for_answer
 import sqlite3
 import elo
 import pymongo
+import streamlit
 
 def show_hand_header(player_elo, hand_elo):
     """
     Display a brief header for each hand, retuning None.
     """
 
-    DIVIDER = "="*30
-    msg = DIVIDER + "\n"
-    msg += "Your elo: {:.0f} Hand elo {:.0f}\n".format(
+    msg = "Your elo: {:.0f} Hand elo {:.0f}\n".format(
             player_elo, hand_elo)
-    msg += DIVIDER
-    print(msg)
-
+    streamlit.markdown(msg)
     return None
 
 def load_hands():

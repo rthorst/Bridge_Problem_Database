@@ -1,4 +1,5 @@
 import textwrap
+import streamlit
 
 def render_single_hand(list_of_cards, hidden=False):
     """
@@ -83,38 +84,40 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
     HAND_WIDTH = 10 # number of characters to pad each hand to.
     TEN_WHITESPACE = " "*10
 
-    # The north hand is simply centered with whitespace on the left and right.
-    HIDE_NORTH_HAND = ("N" in hidden_hands)
-    north_hand_rendered = render_single_hand(north_hand,
-            hidden=HIDE_NORTH_HAND)
-    for line in north_hand_rendered.split("\n"):
-        line = line.ljust(HAND_WIDTH)
-        rendered_hands += ("\n" + TEN_WHITESPACE + line + TEN_WHITESPACE)
-        
-    # The west and east hands are rendered next on either side, with whitespace
-    # in the middle.
-    HIDE_EAST_HAND = ("E" in hidden_hands)
-    HIDE_WEST_HAND = ("W" in hidden_hands)
-    west_hand_rendered = render_single_hand(west_hand,
-            hidden=HIDE_WEST_HAND)
-    east_hand_rendered = render_single_hand(east_hand,
-            hidden=HIDE_EAST_HAND)
-    for west_line, east_line in zip(west_hand_rendered.split("\n"), 
-            east_hand_rendered.split("\n")):
-        west_line = west_line.ljust(HAND_WIDTH)
-        east_line = east_line.ljust(HAND_WIDTH)
-        rendered_hands += ("\n" + west_line + TEN_WHITESPACE + east_line)
-    
-    # The south hand is centered with whitespace on the left and right.
-    HIDE_SOUTH_HAND = ("S" in hidden_hands)
-    south_hand_rendered = render_single_hand(south_hand,
-            hidden=HIDE_SOUTH_HAND)
-    for line in south_hand_rendered.split("\n"):
-        line = line.ljust(HAND_WIDTH)
-        rendered_hands += ("\n" + TEN_WHITESPACE + line + TEN_WHITESPACE)
+    north_hand_rendered = render_single_hand(north_hand)
+    west_hand_rendered = render_single_hand(west_hand)
+    east_hand_rendered = render_single_hand(east_hand)
+    south_hand_rendered = render_single_hand(south_hand)
+
+    # Render hands as HTML
+    rendered_hands = """
+    <table style = "border: none">
+    <tr>
+        <td width="33%"></td>
+        <td width="33%">{}</td>  
+        <td width="33%"></td>
+    </tr>
+    <tr>
+        <td>{}</td>  
+        <td></td>
+        <td>{}</td>  
+    </tr>
+    <tr>
+        <td></td>
+        <td>{}</td>  
+        <td></td>
+    </tr>
+    </table>
+    """.format(north_hand_rendered, west_hand_rendered, east_hand_rendered,
+               south_hand_rendered)
 
     # Remove extraneous line break at the left of the rendered hands.
     rendered_hands = rendered_hands.lstrip("\n")
+
+    # For HTML rendering convert " " -> nbsp and "\n" -> br
+    rendered_hands = rendered_hands.replace("\n", "<br>")
+    with open("temp.txt", "w") as of:
+        of.write(rendered_hands)
 
     return rendered_hands 
 
@@ -210,6 +213,7 @@ def render_four_hands_with_context_and_ask_for_answer(list_of_hands, context, co
             list_of_hands=list_of_hands,
             context=context,
             hidden_hands=hidden_hands)
+    streamlit.markdown(rendered_hands_with_context, unsafe_allow_html=True)
     print(rendered_hands_with_context)
 
     user_answer = ask_for_answer(correct_answer)
@@ -246,7 +250,6 @@ if __name__ == "__main__":
             list_of_hands=list_of_hands,
             context=context,
             hidden_hands=hidden_hands)
-    print("start hand w context")
     print(rendered_hands_with_context)
 
     # Ask for an answer.
