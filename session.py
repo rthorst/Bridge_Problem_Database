@@ -34,7 +34,8 @@ def load_hands():
        "context" : "Contract: 4 spades. You draw trumps in three rounds and play three top hearts ending in dummy, East having 4H. Which suit do you play next?",
        "correct_answer" : "H",
        "_id" : hexadecimal id object,
-       "elo" : 1200
+       "elo" : 1200,
+       "hidden_hands" : "NS"
 
     Todo, as a future direction this function may be eliminated. It should be possible to randomly
     query the hands directly as a MongoDB cursor object. No python lists needed.
@@ -82,7 +83,8 @@ def show_hands_continuously(hands, player_elo=1200):
        "context" : "Contract: 4 spades. You draw trumps in three rounds and play three top hearts ending in dummy, East having 4H. Which suit do you play next?",
        "correct_answer" : "H",
        "elo" : 1200,
-       "_id" : hexadecimal ID object.
+       "_id" : hexadecimal ID object.,
+       "hidden_hands" : "NS"
 
         conn: sqlite3 connection object
 

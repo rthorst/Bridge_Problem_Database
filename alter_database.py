@@ -114,8 +114,9 @@ def ask_for_hand():
         "context" : "Contract: 4 spades. You draw trumps in three rounds and play 
         three top hearts ending in dummy, East having 4H. Which suit do you play next?",
         "correct_answer" : "H",
-        "hand_id" : 1,
-        "hidden_hands" : "NS"
+        "_id" : hexadecimal hand ID,
+        "hidden_hands" : "NS",
+        "elo" : 1200
         }
     """
 
