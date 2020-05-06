@@ -192,7 +192,7 @@ def provide_feedback(user_answer, correct_answer):
     
     return None
 
-def render_four_hands_with_context_and_ask_for_answer(list_of_hands, context, correct_answer, hidden_hands=""):
+def render_four_hands_with_context_and_ask_for_answer(list_of_hands, context, correct_answer, hidden_hands="", hands_widget=streamlit.empty()):
     """
     Parameters:
         
@@ -207,13 +207,18 @@ def render_four_hands_with_context_and_ask_for_answer(list_of_hands, context, co
 
         hidden_hands (string) e.g. "" or "NSEW" or "NS"
 
+        hands_widget: streamlit widget object, 
+            by writing to this widget we allow the next hand to erase
+            the current hand.
+
     Returns True if user_answer is correct_answer, else False.
     """
     rendered_hands_with_context = render_four_hands_with_context(
             list_of_hands=list_of_hands,
             context=context,
             hidden_hands=hidden_hands)
-    streamlit.markdown(rendered_hands_with_context, unsafe_allow_html=True)
+    #streamlit.markdown(rendered_hands_with_context, unsafe_allow_html=True)
+    hands_widget.markdown(rendered_hands_with_context, unsafe_allow_html=True)
     print(rendered_hands_with_context)
 
     user_answer = ask_for_answer(correct_answer)

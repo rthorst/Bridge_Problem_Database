@@ -6,14 +6,14 @@ import elo
 import pymongo
 import streamlit
 
-def show_hand_header(player_elo, hand_elo):
+def show_hand_header(player_elo, hand_elo, header_widget):
     """
     Display a brief header for each hand, retuning None.
     """
 
     msg = "Your elo: {:.0f} Hand elo {:.0f}\n".format(
             player_elo, hand_elo)
-    streamlit.markdown(msg)
+    header_widget.markdown(msg)
     return None
 
 def load_hands():
@@ -100,7 +100,13 @@ def show_hands_continuously(hands, player_elo=1200):
     client = pymongo.MongoClient()
     db = client["bridge_problem_database"]
     hands_collection = db["hands"]
-        
+    
+    # Initialize empty streamlit widgets to write various 
+    # page components to. By using widgets, we allow new
+    # text, when written, to overwrite the old text.
+    header_widget = streamlit.empty()
+    hands_widget = streamlit.empty()
+
     # Show hands in random order until the user asks to stop.
     for hand_index in hand_indices:
 
@@ -118,6 +124,7 @@ def show_hands_continuously(hands, player_elo=1200):
         show_hand_header(
                 player_elo=player_elo,
                 hand_elo=hand_elo,
+                header_widget=header_widget
                 )
 
         # Show the hand.
@@ -134,7 +141,8 @@ def show_hands_continuously(hands, player_elo=1200):
                 list_of_hands=list_of_hands, 
                 context=context,
                 correct_answer=correct_answer,
-                hidden_hands=hidden_hands)
+                hidden_hands=hidden_hands, 
+                hands_widget=hands_widget)
 
         # Calculate new player and hand ELO scores.
         new_player_elo, new_hand_elo = elo.get_new_elos(
