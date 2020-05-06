@@ -1,5 +1,7 @@
-I need to add more hands. 
-Perhaps add a nice way to programmatically add hands at the shell easily.
+Hands in the database.
+I want to store hands in a proper database, and also use this as a learning
+opportunity for an unstructured database.
+
 
 
 
