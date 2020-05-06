@@ -81,6 +81,12 @@ def validate_and_parse(key, value):
         assert type(value) == type("aa"), NOT_STRING_ERROR
         parsed_value = value
     
+
+    # Validate integer-keys, currently just the ELO key.
+    elif key in ["elo"]:
+        assert type(value) == type(1), NOT_INTEGER_ERROR
+        parsed_value = value
+
     # Unrecognized keys.
     else:
         raise Exception(INVALID_KEY_ERROR)

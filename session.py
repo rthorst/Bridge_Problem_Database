@@ -170,7 +170,6 @@ def show_hands_continuously(hands, player_elo=1200):
         hands_collection = db["hands"]
         hands_collection.update_one(query, update)
 
-
     # Done message.
     print("Done!")
 
