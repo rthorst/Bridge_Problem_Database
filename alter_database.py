@@ -76,7 +76,7 @@ def validate_and_parse(key, value):
         parsed_value = value
 
     # Validate context and correct answer, which simply must be strings.
-    elif key in ["context", "correct_answer"]:
+    elif key in ["context", "correct_answer", "notes"]:
         assert type(value) == type("aa"), NOT_STRING_ERROR
         parsed_value = value
 
@@ -159,7 +159,6 @@ def enter_hands_wrapper():
 
     # While user wants to keep entering hands, enter one 
     done = False
-    last_hand_id = hands_json[-1]["hand_id"]
     while not done:
 
         # Ask the user if they want to enter another hand.
