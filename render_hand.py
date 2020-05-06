@@ -15,6 +15,11 @@ def render_single_hand(list_of_cards, hidden=False):
         D: KQT
         C: 976
     """
+
+    CLUB = "&#9827;"
+    DIAMOND = "&#9826;"
+    HEART = "&#9825;"
+    SPADE = "&#9824;"
     
     # In case of a hidden hand, simply return 4 empy lines.
     if hidden:
@@ -28,7 +33,13 @@ def render_single_hand(list_of_cards, hidden=False):
         "6" : 9,    "5" : 10,   "4" : 11,   "3" : 12,
         "2" : 12
     }
-    for suit in ["S", "H", "D", "C"]:
+    suit_string_to_markdown = {
+            "C" : CLUB, 
+            "D": DIAMOND,
+            "H" : HEART, 
+            "S" : SPADE,
+            }
+    for suit in ["C", "D", "H", "S"]:
 
         # Get all cards in this suit, and strip the suit symbol away.
         # E.g. ["9", "2", "K"]
@@ -39,7 +50,7 @@ def render_single_hand(list_of_cards, hidden=False):
         cards_in_this_suit.sort(key=lambda card: SORT_ORDER[card])
 
         # Add the sorted cards to the rendered_hand.
-        this_line = "\n{}: ".format(suit)
+        this_line = "\n{}: ".format(suit_string_to_markdown[suit])
         for card in cards_in_this_suit:
             this_line += card
         rendered_hand += this_line
@@ -210,8 +221,10 @@ if __name__ == "__main__":
 
     # Render one hand.
     hand = ["CA", "C4", "C3", "C2", "CJ", "DJ", "D6", "D3", "S7", "S6", "S4", "HT", "H8"]
-    rendered_hand = render_single_hand(hand, hidden=True)
-    #print(rendered_hand)
+    rendered_hand = render_single_hand(hand, hidden=False)
+    print(rendered_hand)
+    import time
+    time.sleep(555)
 
     # Render four hands.
     north_hand = ["CA", "C4", "C3", "C2", "CJ", "DJ", "D6", "D3", "S7", "S6", "S4", "HT", "H8"]
