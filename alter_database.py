@@ -3,6 +3,7 @@ CLI to add new hands to the dataset efficienctly.
 """
 import json
 import os
+import pymongo
 
 def parse_hand_string_to_list(hand_str):
     """
@@ -152,15 +153,14 @@ def enter_hands_wrapper():
     """ wrapper function to enter hands """
 
     # Load existing hands.
-    data_p = os.path.join("data", "hands.json")
-    f = open(data_p, "r")
-    hands_json = json.loads(f.read())
+    client = pymongo.MongoClient()
+    db = client["bridge_problem_database"]
+    hands_collection = db["hands"]
 
     # Back up the old hands.
     os.system("cp data/hands.json data/hands_backup.json")
 
-# While user wants to keep entering hands, enter one 
-    # and assign it the next numerical ID.
+    # While user wants to keep entering hands, enter one 
     done = False
     last_hand_id = hands_json[-1]["hand_id"]
     while not done:
