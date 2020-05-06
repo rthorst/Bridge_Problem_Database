@@ -3,6 +3,7 @@ import numpy as np
 from render_hand import render_four_hands_with_context_and_ask_for_answer
 import sqlite3
 import elo
+import pymongo
 
 def initialize_elo_table():
     """
@@ -39,11 +40,10 @@ def show_hand_header(player_elo, hand_elo, hand_id):
 
     return None
 
-def load_hands(hands_p="data/hands.json"):
+def load_hands():
     """
     Load hands as a list of json objects.
 
-    Input: hands_p (string) path to json hands file.
     Output: hands, json[]. Example:
 
        "n_hand" : ["SQ", "S6", "S2", "HA", "HK", "H6", "H2", "DA", "DQ", "D5", "CK", "C3", "C2"],
@@ -55,10 +55,14 @@ def load_hands(hands_p="data/hands.json"):
        "hand_id" : 1
 """
 
-    # Load list of hands.
-    hands_str = open(hands_p, "r").read()
-    hands_json = json.loads(hands_str)
-
+    # Connect to PyMongo database.
+    client = pymongo.MongoClient()
+    db = client["bridge_problem_database"]
+    hands_collection = db["hands"]
+    
+    # Get all hands as a list of JSON objects.
+    all_hands = hands_collection.find({})
+    hands_json = list(all_hands)
     return hands_json
 
 def ask_see_another_hand_or_quit():
@@ -136,7 +140,7 @@ def show_hands_continuously(hands, conn, player_elo=1200):
     # Randomize order of showing hands.
     hand_indices = np.arange(len(hands), dtype=np.int8)
     np.random.shuffle(hand_indices)
-
+    
     # Show hands in random order until the user asks to stop.
     for hand_index in hand_indices:
 
