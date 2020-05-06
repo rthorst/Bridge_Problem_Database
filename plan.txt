@@ -1,6 +1,9 @@
-Hands in the database.
-I want to store hands in a proper database, and also use this as a learning
-opportunity for an unstructured database.
+Big things:
+--> Make a web-based frontend.
+
+Little things:
+--> Create a sensible way to automatically back up the hands database to JSON
+to prevent data loss. 
 
 
 
