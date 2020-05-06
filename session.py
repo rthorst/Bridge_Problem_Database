@@ -121,6 +121,13 @@ def show_hands_continuously(hands, player_elo=1200):
     hand_indices = np.arange(len(hands), dtype=np.int8)
     np.random.shuffle(hand_indices)
 
+    # Connect to the hands collection in the database.
+    # This connection is created here to allow faster
+    # writing of updated ELOs after each hand is played.
+    client = pymongo.MongoClient()
+    db = client["bridge_problem_database"]
+    hands_collection = db["hands"]
+        
     # Show hands in random order until the user asks to stop.
     for hand_index in hand_indices:
 
@@ -164,10 +171,6 @@ def show_hands_continuously(hands, player_elo=1200):
         # Update hand ELO in the database.
         query = {"_id" : hand_id} # update rows matching this query.
         update = {"$set" : {"elo" : new_hand_elo}} # update to perform.
-
-        client = pymongo.MongoClient()
-        db = client["bridge_problem_database"]
-        hands_collection = db["hands"]
         hands_collection.update_one(query, update)
 
     # Done message.
