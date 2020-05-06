@@ -5,34 +5,13 @@ import sqlite3
 import elo
 import pymongo
 
-def initialize_elo_table():
-    """
-    Create the elo table if it does not exist.
-
-    Returns None.
-    """
-
-    # Connect to database file, creating if not exists.
-    conn = sqlite3.connect("data/bridge_problems.sqlite")
-
-    # Create hand ELO table if not exists.
-    conn.execute("""
-    create table if not exists hand_elo (
-        hand_id serial primary key,
-        elo integer
-    );
-    """)
-
-    return None
-
-def show_hand_header(player_elo, hand_elo, hand_id):
+def show_hand_header(player_elo, hand_elo):
     """
     Display a brief header for each hand, retuning None.
     """
 
     DIVIDER = "="*30
     msg = DIVIDER + "\n"
-    msg += "Hand id: {:.0f}\n".format(hand_id)
     msg += "Your elo: {:.0f} Hand elo {:.0f}\n".format(
             player_elo, hand_elo)
     msg += DIVIDER
@@ -63,6 +42,7 @@ def load_hands():
     # Get all hands as a list of JSON objects.
     all_hands = hands_collection.find({})
     hands_json = list(all_hands)
+    
     return hands_json
 
 def ask_see_another_hand_or_quit():
@@ -82,7 +62,7 @@ def ask_see_another_hand_or_quit():
     # Return True if user wants to see another hand.
     return (user_input == "y")
 
-def get_hand_elo(hand_id, conn):
+def get_hand_elo(hand_id):
     """
     Lookup hand ELO for a given hand ID, creating if not exists.
 
@@ -115,7 +95,7 @@ def get_hand_elo(hand_id, conn):
     # Otherwise, return the existing ELO for this hand.
     return res[0][0]
 
-def show_hands_continuously(hands, conn, player_elo=1200):
+def show_hands_continuously(hands, player_elo=1200):
     """
     Continuously show hands to the user until the user asks to quit or hands run out.
 
@@ -140,7 +120,7 @@ def show_hands_continuously(hands, conn, player_elo=1200):
     # Randomize order of showing hands.
     hand_indices = np.arange(len(hands), dtype=np.int8)
     np.random.shuffle(hand_indices)
-    
+
     # Show hands in random order until the user asks to stop.
     for hand_index in hand_indices:
 
@@ -151,14 +131,13 @@ def show_hands_continuously(hands, conn, player_elo=1200):
 
         # Get data for this hand.
         hand_json = hands[hand_index]
-        hand_id = hand_json["hand_id"]
-        hand_elo = get_hand_elo(hand_id, conn)
+        hand_elo = hand_json["elo"]
+        hand_id = hand_json["_id"]
 
         # Show information about the hand.
         show_hand_header(
                 player_elo=player_elo,
                 hand_elo=hand_elo,
-                hand_id=hand_id
                 )
 
         # Show the hand.
@@ -183,11 +162,14 @@ def show_hands_continuously(hands, conn, player_elo=1200):
                 )
    
         # Update hand ELO in the database.
-        conn.execute("""
-        update hand_elo set elo = {} where
-        hand_id = {}""".format(new_hand_elo, hand_id)
-        )
-        conn.commit()
+        query = {"_id" : hand_id} # update rows matching this query.
+        update = {"$set" : {"elo" : new_hand_elo}} # update to perform.
+
+        client = pymongo.MongoClient()
+        db = client["bridge_problem_database"]
+        hands_collection = db["hands"]
+        hands_collection.update_one(query, update)
+
 
     # Done message.
     print("Done!")
@@ -202,14 +184,8 @@ def run_session():
     # Load hands in JSON format.
     hands = load_hands()
 
-    # Connect to the SQL database, creating if it doesn't exist, 
-    conn = sqlite3.connect("data/bridge_problems.sqlite")
-    
-    # Initialize ELO table.
-    initialize_elo_table()
-
     # Show hands continuously to the user.
-    show_hands_continuously(hands, conn)
+    show_hands_continuously(hands)
 
 if __name__ == "__main__":
 

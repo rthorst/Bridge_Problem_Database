@@ -24,6 +24,10 @@ hands_j = json.loads(hands_j)
 for j in hands_j:
     del j["hand_id"]
 
+# Add an "elo" field with default value 1200 to each record.
+for j in hands_j:
+    j["elo"] = 1200
+
 # Add these existing hands to the Mongo DB instance.
 hands_collection.insert_many(hands_j)
 
