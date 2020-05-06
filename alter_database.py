@@ -4,6 +4,7 @@ CLI to add new hands to the dataset efficienctly.
 import json
 import os
 import pymongo
+import bson
 
 def parse_hand_string_to_list(hand_str):
     """
@@ -75,16 +76,11 @@ def validate_and_parse(key, value):
         # parsed_value is simply a copy of the inputted value.
         parsed_value = value
 
-    # Validate context and correct answer, which simply must be strings.
-    elif key in ["context", "correct_answer", "notes"]:
+    # Validate keys which simply must be strings.
+    elif key in ["context", "correct_answer", "notes", "hand_id"]:
         assert type(value) == type("aa"), NOT_STRING_ERROR
         parsed_value = value
-
-    # Validate hand ID, which simply must be integer.
-    elif key in ["hand_id"]:
-        assert type(value) == type(1), NOT_INTEGER_ERROR
-        parsed_value = value
-        
+    
     # Unrecognized keys.
     else:
         raise Exception(INVALID_KEY_ERROR)
@@ -205,16 +201,14 @@ def edit_hands_wrapper():
 
         # Ask which hand to edit.
         hand_id_to_edit = input("which hand id would you like to edit?:  ")
-        try:
-            hand_id_to_edit = int(hand_id_to_edit)
-        except:
-            raise Exception("hand id cannot be understood as an integer")
+        hand_id_to_edit = bson.objectid.ObjectId(hand_id_to_edit)
 
-        #TODO stopped here. 
         # Need to list valid hand IDs from mongo db.
         INVALID_HAND_ID_ERROR = "hand id does not exist"
-        assert hand_id_to_edit in hand_ids, INVALID_HAND_ID_ERROR
-
+        HAND_ID_EXISTS = (type(hands_collection.find_one({"_id" : hand_id_to_edit})) 
+                == type({"a": "b"}))
+        assert HAND_ID_EXISTS, INVALID_HAND_ID_ERROR
+        
         # Ask which key to edit.
         key_to_edit = input("which key would you like to edit?:  ")
         valid_keys = ["n_hand", "s_hand", "e_hand", "w_hand", "context", "notes", "correct_answer"]
@@ -222,30 +216,26 @@ def edit_hands_wrapper():
         assert key_to_edit in valid_keys, INVALID_KEY_ERROR
 
         # Show the old value of this key.
-        json_index_to_update = hand_ids.index(hand_id_to_edit)
-        old_value = hands_j[json_index_to_update][key_to_edit]
-        OLD_VALUE_MSG = """
-        The old value of this key was:
-        {}
-        """.format(old_value)
+        OLD_KEY_VALUE = hands_collection.find_one(
+            {"_id" : hand_id_to_edit}, # filter by
+            {key_to_edit : 1, "_id": 0} # return fields where value = 1.
+            )[key_to_edit]
+        
+        OLD_VALUE_MSG = "The old value of this key was: {}".format(OLD_KEY_VALUE)
         print(OLD_VALUE_MSG)
 
         # Prompt user for the new value associated with this key,
         # and validate/parse the new value.
         # this will raise an exception if invalid, otherwise, the 
         # parsed representation will be returned.
-        new_value = input("what should the new value be?:  ")
+        new_value = input("What should the new value be?:  ")
         new_value = validate_and_parse(key_to_edit, new_value)
 
-        # Update the hand value and write changes to the database.
-        hands_j[json_index_to_update][key_to_edit] = new_value
+        # Update the relevant record in the database.
+        query = {"_id" : hand_id_to_edit} # update rows matching this query.
+        update = {"$set" : {key_to_edit : new_value}} # update to perform.
 
-        # Back-up the old database.
-        os.system("cp data/hands.json data/hands_backup.json")
-
-        # Write the results to the database.
-        with open("data/hands.json", "w") as of:
-            of.write(json.dumps(hands_j))
+        hands_collection.update_one(query, update)
 
 def ask_to_add_or_edit():
     """

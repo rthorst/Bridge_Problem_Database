@@ -23,7 +23,6 @@ hands_j = open("data/hands.json", "r").read()
 hands_j = json.loads(hands_j)
 for j in hands_j:
     del j["hand_id"]
-print(hands_j[0])
 
 # Add these existing hands to the Mongo DB instance.
 hands_collection.insert_many(hands_j)
