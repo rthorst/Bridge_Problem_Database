@@ -71,7 +71,7 @@ def show_hand(hand_json, hands_widget):
             )
 
     hands_widget.markdown(rendered_hands, unsafe_allow_html=True)
-
+    print(rendered_hands)
     return None
 
 ##########################################################
@@ -114,11 +114,6 @@ user_answer = response_widget.text_input("Your answer:")
 # (1) Validate answer and update ELO
 # (2) Show another hand.
 
-## TODO
-# There is a problem with the flow.
-# This works for the first two hands.
-# But does not work for hands 3+.
-# Fix that!.
 if user_answer not in [None, ""]:
 
     # Calculate new player and hand ELO scores.
@@ -129,12 +124,15 @@ if user_answer not in [None, ""]:
             player_elo, 
             hand_elo, 
             user_was_correct)
-
+    
     # Update hand ELO in the database.
     hand_id = hand_json["_id"]
     query = {"_id" : hand_id} # update rows matching this query.
     update = {"$set" : {"elo" : new_hand_elo}} # update to perform.
     hands_collection.update_one(query, update)
+
+    # Update player ELO - for now, only in the current session.
+    player_elo = new_player_elo
 
     # Show the next hand.
     hand_json = hands.pop()
@@ -145,4 +143,5 @@ if user_answer not in [None, ""]:
         hand_json=hand_json)
     show_hand(hand_json, hands_widget)
        
-
+if len(hands) == 0:
+    hands_widget.markdown("You have played all hands in the database!")

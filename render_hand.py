@@ -40,7 +40,7 @@ def render_single_hand(list_of_cards, hidden=False):
             "H" : HEART, 
             "S" : SPADE,
             }
-    for suit in ["C", "D", "H", "S"]:
+    for suit in ["S", "H", "D", "C"]:
 
         # Get all cards in this suit, and strip the suit symbol away.
         # E.g. ["9", "2", "K"]
