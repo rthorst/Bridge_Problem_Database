@@ -11,7 +11,7 @@ def show_hand_header(player_elo, hand_elo, header_widget):
     Display a brief header for each hand, retuning None.
     """
 
-    msg = "Your elo: {:.0f} Hand elo {:.0f}\n".format(
+    msg = "Your rating: {:.0f} Hand rating {:.0f}\n".format(
             player_elo, hand_elo)
     header_widget.markdown(msg)
     return None
@@ -106,6 +106,7 @@ def show_hands_continuously(hands, player_elo=1200):
     # text, when written, to overwrite the old text.
     header_widget = streamlit.empty()
     hands_widget = streamlit.empty()
+    response_widget = streamlit.empty()
 
     # Show hands in random order until the user asks to stop.
     for hand_index in hand_indices:
@@ -142,7 +143,9 @@ def show_hands_continuously(hands, player_elo=1200):
                 context=context,
                 correct_answer=correct_answer,
                 hidden_hands=hidden_hands, 
-                hands_widget=hands_widget)
+                hands_widget=hands_widget, 
+                response_widget=response_widget
+                )
 
         # Calculate new player and hand ELO scores.
         new_player_elo, new_hand_elo = elo.get_new_elos(
