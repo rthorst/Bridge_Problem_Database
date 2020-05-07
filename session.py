@@ -51,8 +51,17 @@ def load_hands():
     return hands_json
 
 
-def show_hand(hand_json, hands_widget):
-    """ """
+def render_hands_in_streamlit(hand_json, hands_widget):
+    """Helper function to render hand diagram in streamlit.
+    
+    Parameters:
+    ----------------
+    hand_json : json object containing 4 hands, context, etc.
+    hands_widget: streamlit widget, to which the hands will be written.
+
+    Renders the hands in HTML + markdown by calling 
+    render_hands.render_four_hands_with_context()
+    """
 
     # Show the hand.
     list_of_hands = [
@@ -71,7 +80,7 @@ def show_hand(hand_json, hands_widget):
             )
 
     hands_widget.markdown(rendered_hands, unsafe_allow_html=True)
-    print(rendered_hands)
+    
     return None
 
 ##########################################################
