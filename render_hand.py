@@ -91,7 +91,7 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
 
     # Render hands as HTML
     rendered_hands = """
-    <table style = "border: none">
+    <table style = "border: none" width="600">
     <tr>
         <td width="33%"></td>
         <td width="33%">{}</td>  
