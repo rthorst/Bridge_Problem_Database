@@ -94,22 +94,22 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
 
     # Render hands as HTML
     rendered_hands = """
-    <table style = "border: none" width="600">
-    <tr>
-        <td width="33%"></td>
-        <td width="33%">{}</td>  
-        <td width="33%"></td>
+    <table width="600" style="border: none">
+    <tr style="border: none">
+        <td width="33%" style="border: none"></td>
+        <td width="33%" style="border: none">{}</td>  
+        <td width="33%" style="border: none"></td>
     </tr>
-    <tr>
-        <td>{}</td>  
-        <td></td>
-        <td>{}</td>  
+    <tr style="border: none">
+        <td width="33%" style="border: none">{}</td>
+        <td width="33%" style="border: none"></td>  
+        <td width="33%" style="border: none">{}</td>
     </tr>
-    <tr>
-        <td></td>
-        <td>{}</td>  
-        <td></td>
+    <tr style="border: none">
     </tr>
+        <td width="33%" style="border: none"></td>
+        <td width="33%" style="border: none">{}</td>  
+        <td width="33%" style="border: none"></td>
     </table>
     """.format(north_hand_rendered, west_hand_rendered, east_hand_rendered,
                south_hand_rendered)
