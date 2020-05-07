@@ -83,46 +83,48 @@ def render_hands_in_streamlit(hand_json, hands_widget):
     
     return None
 
-##########################################################
-####### The code below executes in sequence and ##########
-####### drives the main Streamlit app  ###################
-##########################################################
+#################################################################
+################## Start Streamlit App #########################
+#################################################################
 
-player_elo = 1200 # TODO a future direction is to make this dynamic.
+# Streamlit renders the following code in declarative style from
+# top to bottom. 
 
-# Load hands and randomize their order.
+player_elo = 1200 # TODO: a known future direction is to store
+                  # player ELO across sessions.
+
+# Load all hands from the database, and randomize their order
+# of presentation.
 hands = load_hands()
 hand_indices = np.arange(len(hands), dtype=np.int8)
 np.random.shuffle(hands)
 
-# Connect to the hands collection in the database.
-# This connection is created here to allow faster
-# writing of updated ELOs after each hand is played.
+# Connect to the "hands" collection in the database, which
+# allows faster updates after each hand. 
 client = pymongo.MongoClient()
 db = client["bridge_problem_database"]
 hands_collection = db["hands"]
-    
-# Initialize empty streamlit widgets to write various 
-# page components to. By using widgets, we allow new
-# text, when written, to overwrite the old text.
+
+# Initialize empty streamlit "widgets" to write page components
+# to. By using widgets, we are able to over-write the content
+# (e.g. with a new hand) more easily.
 header_widget = streamlit.empty()
 hands_widget = streamlit.empty()
 response_widget = streamlit.empty()
 
-# Show the first hand and ask for an answer.
+# Show the user the first hand, and ask for an answer.
 hand_json = hands.pop()
 
 show_hand_header(player_elo=player_elo,
         header_widget=header_widget,
         hand_json=hand_json)
-show_hand(hand_json, hands_widget)
+render_hands_in_streamlit(hand_json, hands_widget)
 
 user_answer = response_widget.text_input("Your answer:")
 
-# If the user inputs and answer:
-# (1) Validate answer and update ELO
-# (2) Show another hand.
-
+# After the first hand, this code will execute.
+# Update player and hand ELO based on the answer given,
+# and show a new hand. 
 if user_answer not in [None, ""]:
 
     # Calculate new player and hand ELO scores.
@@ -134,13 +136,26 @@ if user_answer not in [None, ""]:
             hand_elo, 
             user_was_correct)
     
-    # Update hand ELO in the database.
+    print(user_answer, correct_answer, user_was_correct)
+    
+    # Show the next hand.
+    hand_json = hands.pop()
+    user_answer = response_widget.text_input("Your answer: ")
+
+    show_hand_header(player_elo=player_elo,
+        header_widget=header_widget,
+        hand_json=hand_json)
+    render_hands_in_streamlit(hand_json, hands_widget)
+       
+    # Update player and hand ELO in the database.
+    # For now, the player ELO is only stored in the 
+    # current session, but a future direction is to 
+    # store player ELO across sessions.
     hand_id = hand_json["_id"]
     query = {"_id" : hand_id} # update rows matching this query.
     update = {"$set" : {"elo" : new_hand_elo}} # update to perform.
     hands_collection.update_one(query, update)
 
-    # Update player ELO - for now, only in the current session.
     player_elo = new_player_elo
 
     # Show the next hand.
@@ -150,7 +165,5 @@ if user_answer not in [None, ""]:
     show_hand_header(player_elo=player_elo,
         header_widget=header_widget,
         hand_json=hand_json)
-    show_hand(hand_json, hands_widget)
+    render_hands_in_streamlit(hand_json, hands_widget)
        
-if len(hands) == 0:
-    hands_widget.markdown("You have played all hands in the database!")
