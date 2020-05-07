@@ -1,3 +1,1 @@
-# Bridge_Problem_Database
-
-![Screenshot](screenshot.png)
+![Demo](demo.png)
