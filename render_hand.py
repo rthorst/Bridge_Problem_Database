@@ -78,16 +78,19 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
 
     # Extract the individual hands from the input, list_of_hands.
     north_hand, west_hand, south_hand, east_hand = list_of_hands
-    
+    north_hidden = "N" in hidden_hands
+    south_hidden = "S" in hidden_hands
+    east_hidden = "E" in hidden_hands
+    west_hidden = "W" in hidden_hands
     # Render the individual hands, one at a time.
     rendered_hands = ""
     HAND_WIDTH = 10 # number of characters to pad each hand to.
     TEN_WHITESPACE = " "*10
 
-    north_hand_rendered = render_single_hand(north_hand)
-    west_hand_rendered = render_single_hand(west_hand)
-    east_hand_rendered = render_single_hand(east_hand)
-    south_hand_rendered = render_single_hand(south_hand)
+    north_hand_rendered = render_single_hand(north_hand, hidden=north_hidden)
+    west_hand_rendered = render_single_hand(west_hand, hidden=west_hidden)
+    east_hand_rendered = render_single_hand(east_hand, hidden=east_hidden)
+    south_hand_rendered = render_single_hand(south_hand, hidden=south_hidden)
 
     # Render hands as HTML
     rendered_hands = """
