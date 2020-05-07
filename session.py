@@ -112,19 +112,16 @@ header_widget = streamlit.empty()
 hands_widget = streamlit.empty()
 response_widget = streamlit.empty()
 
-# Show the user the first hand, and ask for an answer.
+# Show the user a hand
 hand_json = hands.pop()
-
 show_hand_header(player_elo=player_elo,
-        header_widget=header_widget,
-        hand_json=hand_json)
+    header_widget=header_widget,
+    hand_json=hand_json)
 render_hands_in_streamlit(hand_json, hands_widget)
 
+# Ask for an answer.
 user_answer = response_widget.text_input("Your answer:")
 
-# After the first hand, this code will execute.
-# Update player and hand ELO based on the answer given,
-# and show a new hand. 
 if user_answer not in [None, ""]:
 
     # Calculate new player and hand ELO scores.
@@ -135,18 +132,7 @@ if user_answer not in [None, ""]:
             player_elo, 
             hand_elo, 
             user_was_correct)
-    
-    print(user_answer, correct_answer, user_was_correct)
-    
-    # Show the next hand.
-    hand_json = hands.pop()
-    user_answer = response_widget.text_input("Your answer: ")
 
-    show_hand_header(player_elo=player_elo,
-        header_widget=header_widget,
-        hand_json=hand_json)
-    render_hands_in_streamlit(hand_json, hands_widget)
-       
     # Update player and hand ELO in the database.
     # For now, the player ELO is only stored in the 
     # current session, but a future direction is to 
@@ -158,12 +144,3 @@ if user_answer not in [None, ""]:
 
     player_elo = new_player_elo
 
-    # Show the next hand.
-    hand_json = hands.pop()
-    user_answer = response_widget.text_input("Your answer: ")
-
-    show_hand_header(player_elo=player_elo,
-        header_widget=header_widget,
-        hand_json=hand_json)
-    render_hands_in_streamlit(hand_json, hands_widget)
-       
