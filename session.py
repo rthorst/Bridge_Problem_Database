@@ -84,7 +84,7 @@ player_elo = 1200 # TODO a future direction is to make this dynamic.
 # Load hands and randomize their order.
 hands = load_hands()
 hand_indices = np.arange(len(hands), dtype=np.int8)
-np.random.shuffle(hand_indices)
+np.random.shuffle(hands)
 
 # Connect to the hands collection in the database.
 # This connection is created here to allow faster
@@ -101,12 +101,11 @@ hands_widget = streamlit.empty()
 response_widget = streamlit.empty()
 
 # Show the first hand and ask for an answer.
-current_hand_idx = 0
-hand_json = hands[current_hand_idx]
+hand_json = hands.pop()
 
 show_hand_header(player_elo=player_elo,
         header_widget=header_widget,
-        hand_json=hands[current_hand_idx])
+        hand_json=hand_json)
 show_hand(hand_json, hands_widget)
 
 user_answer = response_widget.text_input("Your answer:")
@@ -120,7 +119,7 @@ user_answer = response_widget.text_input("Your answer:")
 # This works for the first two hands.
 # But does not work for hands 3+.
 # Fix that!.
-if user_answer:
+if user_answer not in [None, ""]:
 
     # Calculate new player and hand ELO scores.
     correct_answer = hand_json["correct_answer"]
@@ -138,14 +137,12 @@ if user_answer:
     hands_collection.update_one(query, update)
 
     # Show the next hand.
-    current_hand_idx += 1
+    hand_json = hands.pop()
     user_answer = response_widget.text_input("Your answer: ")
-
-    hand_json = hands[current_hand_idx]
 
     show_hand_header(player_elo=player_elo,
         header_widget=header_widget,
-        hand_json=hands[current_hand_idx])
+        hand_json=hand_json)
     show_hand(hand_json, hands_widget)
        
 
