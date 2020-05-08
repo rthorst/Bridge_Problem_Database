@@ -110,6 +110,7 @@ hands_collection = db["hands"]
 # to. By using widgets, we are able to over-write the content
 # (e.g. with a new hand) more easily.
 header_widget = streamlit.empty()
+feedback_widget = streamlit.empty() # correct/incorrect.
 hands_widget = streamlit.empty()
 response_widget = streamlit.empty()
 
@@ -149,6 +150,14 @@ if user_answer not in [None, ""]:
             player_elo, 
             hand_elo, 
             user_was_correct)
+
+    # Provide feedback to the user (correct/incorrect)
+    if user_was_correct:
+        feedback_msg = "<font color='green'>Correct!</font>"
+    else:
+        feedback_msg = "<font color='red'>Incorrect. Correct answer is {}</font>".format(correct_answer)
+    
+    feedback_widget.markdown(feedback_msg, unsafe_allow_html = True)
 
     # Update player and hand ELO in the database.
     # For now, the player ELO is only stored in the 
