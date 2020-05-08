@@ -220,8 +220,9 @@ def edit_hands_wrapper():
         
         # Ask which key to edit.
         key_to_edit = input("which key would you like to edit?:  ")
-        valid_keys = ["n_hand", "s_hand", "e_hand", "w_hand", "context", "notes", "correct_answer"]
-        INVALID_KEY_ERROR = "key cannot be understood as one of ".format(valid_keys)
+        valid_keys = ["n_hand", "s_hand", "e_hand", "w_hand", "context", "notes", 
+                "correct_answer", "hidden_hands"]
+        INVALID_KEY_ERROR = "key cannot be understood as one of {}".format(valid_keys)
         assert key_to_edit in valid_keys, INVALID_KEY_ERROR
 
         # Show the old value of this key.
