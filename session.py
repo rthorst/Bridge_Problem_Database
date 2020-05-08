@@ -1,3 +1,4 @@
+import os
 import json 
 import numpy as np
 from render_hand import render_four_hands_with_context
@@ -119,13 +120,29 @@ show_hand_header(player_elo=player_elo,
     hand_json=hand_json)
 render_hands_in_streamlit(hand_json, hands_widget)
 
+# Store the answer to the current hand in a temporary 
+# file (answer.txt). This is a HACK and should be 
+# refactored, but is necessary because any time the 
+# user enters an answer, Streamlit re-executes the app
+# from the top.
+if not os.path.exists("answer.txt"):
+    with open("answer.txt", "w") as of:
+        of.write(hand_json["correct_answer"])
+
 # Ask for an answer.
+# Note that when the user interacts enters an answer, 
+# the entire script will re-run.
 user_answer = response_widget.text_input("Your answer:")
 
 if user_answer not in [None, ""]:
 
+    # Look up the correct answer, which will be 
+    # in the stored "answer.txt" file since streamlit
+    # has already reloaded the page in the background and
+    # proceeded to the next problem.
+    correct_answer = open("answer.txt", "r").read()
+
     # Calculate new player and hand ELO scores.
-    correct_answer = hand_json["correct_answer"]
     user_was_correct = (user_answer.lower() == correct_answer.lower())
     hand_elo = hand_json["elo"]
     new_player_elo, new_hand_elo = elo.get_new_elos(
@@ -144,3 +161,7 @@ if user_answer not in [None, ""]:
 
     player_elo = new_player_elo
 
+    # Cache the correct answer to this current hand in answer.txt,
+    # so that when the page is reloaded the answer is preserved.
+    with open("answer.txt", "w") as of:
+        of.write(hand_json["correct_answer"])
