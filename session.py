@@ -121,6 +121,10 @@ show_hand_header(player_elo=player_elo,
     hand_json=hand_json)
 render_hands_in_streamlit(hand_json, hands_widget)
 
+# For debugging purposes, log the hand to the shell.
+# This is helpful to identify incorrectly added hands.
+print(hand_json)
+
 # Store the answer to the current hand in a temporary 
 # file (answer.txt). This is a HACK and should be 
 # refactored, but is necessary because any time the 
