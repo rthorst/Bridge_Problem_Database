@@ -19,7 +19,19 @@ def write_mongodb_to_json():
     
 def write_json_to_mongodb():
     
+    # Load "hands" collection.
+    client = pymongo.MongoClient()
+    db = client["bridge_problem_database"]
+    hands_collection = db["hands"]
+    hands_collection.drop() # drop if already exists.
 
+    # Load hands as json.
+    hands_s = open("data/hands.json", "r").read()
+    hands_j = json.loads(hands_s)
+    
+    # Write hands to database.
+    hands_collection.insert_many(hands_j)
 
 if __name__ == "__main__":
-    write_mongodb_to_json()
+    #write_mongodb_to_json()
+    write_json_to_mongodb()
