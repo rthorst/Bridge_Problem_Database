@@ -130,8 +130,8 @@ print(hand_json)
 # refactored, but is necessary because any time the 
 # user enters an answer, Streamlit re-executes the app
 # from the top.
-if not os.path.exists("answer.txt"):
-    with open("answer.txt", "w") as of:
+if not os.path.exists("data/answer.txt"):
+    with open("data/answer.txt", "w") as of:
         of.write(hand_json["correct_answer"])
 
 # Ask for an answer.
@@ -145,7 +145,7 @@ if user_answer not in [None, ""]:
     # in the stored "answer.txt" file since streamlit
     # has already reloaded the page in the background and
     # proceeded to the next problem.
-    correct_answer = open("answer.txt", "r").read()
+    correct_answer = open("data/answer.txt", "r").read()
 
     # Calculate new player and hand ELO scores.
     user_was_correct = (user_answer.lower() == correct_answer.lower())
@@ -176,5 +176,5 @@ if user_answer not in [None, ""]:
 
     # Cache the correct answer to this current hand in answer.txt,
     # so that when the page is reloaded the answer is preserved.
-    with open("answer.txt", "w") as of:
+    with open("data/answer.txt", "w") as of:
         of.write(hand_json["correct_answer"])
