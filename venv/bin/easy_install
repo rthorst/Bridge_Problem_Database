@@ -1,4 +1,5 @@
-#!/home/ubuntu/Bridge_Problem_Database/venv/bin/python
+#!/home/ubuntu/Bridge_Problem_Database/venv/bin/python3
+
 # -*- coding: utf-8 -*-
 import re
 import sys
