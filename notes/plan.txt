@@ -1,20 +1,10 @@
-1.
+Big things:
+--> Get this online as a demo.
 
-The user should be able to edit hands in the database.
-
-Input :
-Hand ID
-Key to edit.
-
-Enter new value for the key.
-
-Validate it as before.
+Little things:
+--> Create a sensible way to automatically back up the hands database to JSO
+--> Bugfix in the frontend to allow first hand to be answered correctly.
+--> Catch up on code review.
+--> Write code to backup the database.
 
 
-This implies I should create a function validate(key, value) which knows all my keys and validates.
-It should work for editing fields in the DB and also for entering them in the first place. 
-This is the key extension here.
-
-
-2.
-We should run in MongoDB, a json-like NoSQL database
