@@ -7,15 +7,74 @@ import elo
 import pymongo
 import streamlit
 
+def provide_feedback(user_was_correct, feedback_widget):
+    """Provide feedback on whether the user was correct.
+
+    Parameters:
+    -------------
+    user_was_correct (boolean)
+    feedback_widget (streamlit widget object
+
+    Returns:
+    --------------
+    None
+
+    Write feedback, as HTML + markdown, to feedback_widget.
+    By using a widget object, subsequent messages will overwrite
+    the existing feedback.
+    """
+
+    if user_was_correct:
+        feedback_msg = "<font color='green'>Correct!</font>"
+
+    else:
+        feedback_msg = "<font color='red'>Incorrect. Correct answer is {}</font>".format(correct_answer)
+    
+    feedback_widget.markdown(feedback_msg, unsafe_allow_html = True)
+
+def test_if_correct_answer(user_answer, correct_answer):
+    """Return True if user gave the correect answer
+
+    Parameters:
+    -----------
+    user_answer (string)
+    correct_answer (string)
+
+    Returns:
+    correct (Boolean)
+
+    Currently, we validate by checking for an exact but case-insensitive
+    string match. As a future direction we should consider cases where
+    more flexibility may be desired, for example allowing "F" (false) to 
+    count when "N" (no) is the correct answer.
+    """
+
+    return user_answer.lower() == correct_answer.lower()
+
 def show_hand_header(player_elo, hand_json, header_widget):
     """
     Display a brief header for each hand, retuning None.
+
+    Parameters:
+    --------------
+    player_elo (float) e.g. 1200
+    hand_json (json) json object containing the hand.
+    header_widget (streamlit widget)
+
+    Returns:
+    -------------
+    None
+
+    Write a simple header in markdown to header_widget. By writing
+    to a streamlit widget, subsequent calls to this function will
+    over-write the old header.
     """
 
     hand_elo = hand_json["elo"]
-    msg = "Your rating: {:.0f} Hand rating {:.0f}\n".format(
+    msg = "### You are rated: {:.0f} This hand is rated: {:.0f}\n".format(
             player_elo, hand_elo)
     header_widget.markdown(msg)
+
     return None
 
 def load_hands():
@@ -59,6 +118,10 @@ def render_hands_in_streamlit(hand_json, hands_widget):
     ----------------
     hand_json : json object containing 4 hands, context, etc.
     hands_widget: streamlit widget, to which the hands will be written.
+
+    Returns:
+    ---------------
+    None
 
     Renders the hands in HTML + markdown by calling 
     render_hands.render_four_hands_with_context()
@@ -148,7 +211,7 @@ if user_answer not in [None, ""]:
     correct_answer = open("data/answer.txt", "r").read()
 
     # Calculate new player and hand ELO scores.
-    user_was_correct = (user_answer.lower() == correct_answer.lower())
+    user_was_correct = test_if_correct_answer(user_answer, correct_answer)
     hand_elo = hand_json["elo"]
     new_player_elo, new_hand_elo = elo.get_new_elos(
             player_elo, 
@@ -156,12 +219,7 @@ if user_answer not in [None, ""]:
             user_was_correct)
 
     # Provide feedback to the user (correct/incorrect)
-    if user_was_correct:
-        feedback_msg = "<font color='green'>Correct!</font>"
-    else:
-        feedback_msg = "<font color='red'>Incorrect. Correct answer is {}</font>".format(correct_answer)
-    
-    feedback_widget.markdown(feedback_msg, unsafe_allow_html = True)
+    provide_feedback(user_was_correct, feedback_widget)
 
     # Update player and hand ELO in the database.
     # For now, the player ELO is only stored in the 
