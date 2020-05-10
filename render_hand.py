@@ -123,8 +123,6 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
 
     # For HTML rendering convert " " -> nbsp and "\n" -> br
     rendered_hands = rendered_hands.replace("\n", "<br>")
-    with open("temp.txt", "w") as of:
-        of.write(rendered_hands)
 
     return rendered_hands 
 
