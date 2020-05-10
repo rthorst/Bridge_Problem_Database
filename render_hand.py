@@ -5,12 +5,14 @@ def render_single_hand(list_of_cards, hidden=False):
     """
     return a string representation of a single hand.
 
-    input:
-        list_of_cards (string []) e.g. ["S9", "C7", "HA"...]
-        hidden (boolean) if true, replace the hand with empty string.
+    parameters:
+    -------------
+    list_of_cards (string []) e.g. ["S9", "C7", "HA"...]
+    hidden (boolean) if true, replace the hand with empty string.
 
     returns:
-        rendered_hand (string) e.g. 
+    --------------
+    rendered_hand (string) e.g. 
         S: 972
         H: AJ75
         D: KQT
@@ -82,6 +84,7 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
     south_hidden = "S" in hidden_hands
     east_hidden = "E" in hidden_hands
     west_hidden = "W" in hidden_hands
+    
     # Render the individual hands, one at a time.
     rendered_hands = ""
     HAND_WIDTH = 10 # number of characters to pad each hand to.
@@ -128,15 +131,19 @@ def render_four_hands_with_context(list_of_hands, context="", hidden_hands=""):
     """
     Render four hands as a string, with optional context.
 
-    Input:
-        list_of_hands, shape (4,)
+    Parameters:
+    -------------
+    list_of_hands, shape (4,)
         N, W, S, E hands.
         each hand is a list of cards, e.g. ["CA", "D4", ...]
+    context (string). Description of context.
+        e.g. "Contract: 4S. West leads the club king. You win and play 
+        which suit from dummy?"
+    hidden_hands (string) e.g. "" or "NSWE" or "NS"
 
-        context (string). Description of context.
-        e.g. "Contract: 4S. West leads the club king. You win and play which suit from dummy?"
-
-        hidden_hands (string) e.g. "" or "NSWE" or "NS"
+    Returns:
+    --------------
+    None
     """
 
     # Render the four hands as a hand diagram (string).
@@ -152,30 +159,6 @@ def render_four_hands_with_context(list_of_hands, context="", hidden_hands=""):
 
     return rendered_hands
 
-def provide_feedback(user_answer, correct_answer):
-    """
-    Provide feedback to the user, currently logging feedback to the shell.
-
-    Parameters:
-        user_answer (string)
-        correct_answer (string)
-
-    Return true if user_answer == correct_answer.
-    """
-
-    # Test if answer is an exact string match, ignoring case 
-    # and ignoring extra whitespace.
-    user_answer_preprocessed = user_answer.lower().lstrip().rstrip()
-    correct_answer_preprocessed = correct_answer.lower()
-    if user_answer_preprocessed == correct_answer_preprocessed:
-        msg = "Correct!"
-    else:
-        msg = "Incorrect! Correct answer is {}".format(correct_answer)
-        msg = "\n".join(textwrap.wrap(msg, 30))
-    
-    print(msg)
-    
-    return None
 
 if __name__ == "__main__":
 
@@ -208,7 +191,3 @@ if __name__ == "__main__":
             hidden_hands=hidden_hands)
     print(rendered_hands_with_context)
 
-    # Ask for an answer.
-    correct_answer = "H"
-    render_four_hands_with_context_and_ask_for_answer(list_of_hands,
-            context, correct_answer, hidden_hands)
