@@ -65,17 +65,18 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
     Render four hands as a string representation.
 
     Parameters:
-        
-        list_of_hands, shape (4,)
-            N, W, S, E hands.
-            each hand is a list of cards, e.g. ["CA", "D4", ...]
+    --------------        
+    list_of_hands, shape (4,)
+        N, W, S, E hands.
+        each hand is a list of cards, e.g. ["CA", "D4", ...]
     
-        hidden_hands (str) e.g. "NE" or "" or "NSEW"
-            hands to hide, specified as characters N, S, E, or W.
+    hidden_hands (str) e.g. "NE" or "" or "NSEW"
+        hands to hide, specified as characters N, S, E, or W.
+    
     Returns: 
-    
-        rendered_hands  (string)
-            This is a full hand diagram.
+    --------------
+    rendered_hands  (string)
+        This is a full hand diagram.
     """
 
     # Extract the individual hands from the input, list_of_hands.
@@ -161,6 +162,11 @@ def render_four_hands_with_context(list_of_hands, context="", hidden_hands=""):
 
 
 if __name__ == "__main__":
+
+    """
+    This is legacy code to test this module in the command line.
+    TODO, this should eventually be refactored into proper unit tests.
+    """
 
     # Render one hand.
     hand = ["CA", "C4", "C3", "C2", "CJ", "DJ", "D6", "D3", "S7", "S6", "S4", "HT", "H8"]
