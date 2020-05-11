@@ -1,6 +1,6 @@
 --> Big picture next step:
 * Player ratings. Get a simple player rating maintained within the session, no login or anything.
-
+* Then: add in a widget (to the right) where you can enter an auction.
 
 Little things:
 --> Create a sensible way to automatically back up the hands database to JSO
