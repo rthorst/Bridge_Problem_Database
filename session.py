@@ -157,6 +157,9 @@ def render_hands_in_streamlit(hand_json, hands_widget):
 player_elo = 1200 # TODO: a known future direction is to store
                   # player ELO across sessions.
 
+# Allow the user to log in on the sidebar.
+account = streamlit.sidebar.text_input("Username:", value="guest")
+
 # Load all hands from the database, and randomize their order
 # of presentation.
 hands = load_hands()

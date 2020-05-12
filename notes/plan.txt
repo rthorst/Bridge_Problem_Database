@@ -8,4 +8,5 @@ Little things:
 --> Catch up on code review.
 --> Write code to backup the database.
 
-
+User rating.
+-- Associate rating with account.
