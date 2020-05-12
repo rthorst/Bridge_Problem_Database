@@ -1,5 +1,4 @@
 --> Big picture next step:
-* Player ratings. Get a simple player rating maintained within the session, no login or anything.
 * Then: add in a widget (to the right) where you can enter an auction.
 
 Little things:
@@ -8,5 +7,3 @@ Little things:
 --> Catch up on code review.
 --> Write code to backup the database.
 
-User rating.
--- Associate rating with account.
