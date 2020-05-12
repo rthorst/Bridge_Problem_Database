@@ -154,11 +154,8 @@ def render_hands_in_streamlit(hand_json, hands_widget):
 # Streamlit renders the following code in declarative style from
 # top to bottom. 
 
-player_elo = 1200 # TODO: a known future direction is to store
-                  # player ELO across sessions.
-
 # Allow the user to log in on the sidebar.
-account = streamlit.sidebar.text_input("Username:", value="guest")
+username = streamlit.sidebar.text_input("Username:", value="guest")
 
 # Load all hands from the database, and randomize their order
 # of presentation.
@@ -166,11 +163,19 @@ hands = load_hands()
 hand_indices = np.arange(len(hands), dtype=np.int8)
 np.random.shuffle(hands)
 
-# Connect to the "hands" collection in the database, which
-# allows faster updates after each hand. 
+# Connect to the "hands" and "user" collections in the database.
 client = pymongo.MongoClient()
 db = client["bridge_problem_database"]
 hands_collection = db["hands"]
+user_collection = db["user"]
+
+# Look up user ELO from the database. 
+params = {"username" : username}
+query_result = user_collection.find_one(params)
+if query_result:
+    player_elo = query_result["elo"]
+else:
+    player_elo = 1200
 
 # Initialize empty streamlit "widgets" to write page components
 # to. By using widgets, we are able to over-write the content
