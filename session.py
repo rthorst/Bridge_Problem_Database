@@ -147,6 +147,30 @@ def render_hands_in_streamlit(hand_json, hands_widget):
     
     return None
 
+
+def lookup_user_elo(username, user_collection):
+    """Lookup a user's ELO rating, returning 1200 for new users.
+
+    Parameters:
+    -----------
+    username (string)
+    user_collection (pymongo collection object)
+
+    Returns:
+    ----------
+    player_elo (numeric) e.g. 1200
+    """
+
+    params = {"username" : username}
+    query_result = user_collection.find_one(params)
+    
+    if query_result:
+        player_elo = query_result["elo"]
+    else:
+        player_elo = 1200
+
+    return player_elo
+
 #################################################################
 ################## Start Streamlit App #########################
 #################################################################
@@ -170,12 +194,7 @@ hands_collection = db["hands"]
 user_collection = db["user"]
 
 # Look up user ELO from the database. 
-params = {"username" : username}
-query_result = user_collection.find_one(params)
-if query_result:
-    player_elo = query_result["elo"]
-else:
-    player_elo = 1200
+player_elo = lookup_user_elo(username, user_collection)
 
 # Initialize empty streamlit "widgets" to write page components
 # to. By using widgets, we are able to over-write the content
