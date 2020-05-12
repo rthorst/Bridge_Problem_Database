@@ -6,6 +6,8 @@ import sqlite3
 import elo
 import pymongo
 import streamlit
+import datetime
+
 
 def provide_feedback(user_was_correct, feedback_widget):
     """Provide feedback on whether the user was correct.
@@ -171,6 +173,51 @@ def lookup_user_elo(username, user_collection):
 
     return player_elo
 
+def log_showing_hand(hand_json, username, events_collection):
+    """Log that a hand was shown to the user in the events collection.
+
+    Parameters:
+    -----------
+    hand_json (json)
+    username (string)
+    events_collection (pymongo collection object)
+
+    Returns:
+    ------------
+    None
+
+    Writes to the events collection a row with
+    username, hand_id, correct_answer, timestamp.
+    """
+
+    event_record = {
+        "username" : username,
+        "hand_id" : hand_json["_id"],
+        "correct_answer" : hand_json["correct_answer"],
+        "timestamp" : datetime.datetime.now().timestamp()
+    }
+    events_collection.insert_one(event_record)
+
+    return None
+
+def lookup_correct_answer(events_collection):
+    """Lookup the correct answer, from 2nd-most-recent row in events collection
+
+    Paramters:
+    ----------
+    events_collection (pymongo collection)
+
+    Returns:
+    ----------
+    correct_answer (string)
+    """
+
+    events_sorted_by_timestamp = events_collection.find().sort(
+            "timestamp", pymongo.DESCENDING)
+    second_most_recent_event = events_sorted_by_timestamp[1]
+
+    return second_most_recent_event["correct_answer"]
+
 #################################################################
 ################## Start Streamlit App #########################
 #################################################################
@@ -187,11 +234,13 @@ hands = load_hands()
 hand_indices = np.arange(len(hands), dtype=np.int8)
 np.random.shuffle(hands)
 
-# Connect to the "hands" and "user" collections in the database.
+# Connect to the "hands", "user", and "events" collections in 
+# the database.
 client = pymongo.MongoClient()
 db = client["bridge_problem_database"]
 hands_collection = db["hands"]
 user_collection = db["user"]
+events_collection = db["events"] # hands shown to users.
 
 # Look up user ELO from the database. 
 player_elo = lookup_user_elo(username, user_collection)
@@ -204,25 +253,18 @@ feedback_widget = streamlit.empty() # correct/incorrect.
 hands_widget = streamlit.empty()
 response_widget = streamlit.empty()
 
-# Show the user a hand
+# Show the user a hand and log to the database that the hand was shown.
 hand_json = hands.pop()
 show_hand_header(player_elo=player_elo,
     header_widget=header_widget,
     hand_json=hand_json)
 render_hands_in_streamlit(hand_json, hands_widget)
+log_showing_hand(hand_json=hand_json, 
+        username=username, events_collection=events_collection)
 
 # For debugging purposes, log the hand to the shell.
 # This is helpful to identify incorrectly added hands.
 print(hand_json)
-
-# Store the answer to the current hand in a temporary 
-# file (answer.txt). This is a HACK and should be 
-# refactored, but is necessary because any time the 
-# user enters an answer, Streamlit re-executes the app
-# from the top.
-if not os.path.exists("data/answer.txt"):
-    with open("data/answer.txt", "w") as of:
-        of.write(hand_json["correct_answer"])
 
 # Ask for an answer.
 # Note that when the user interacts enters an answer, 
@@ -231,11 +273,10 @@ user_answer = response_widget.text_input("Your answer:")
 
 if user_answer not in [None, ""]:
 
-    # Look up the correct answer, which will be 
-    # in the stored "answer.txt" file since streamlit
-    # has already reloaded the page in the background and
-    # proceeded to the next problem.
-    correct_answer = open("data/answer.txt", "r").read()
+    # Lookup the correct answer, which is the second-to-most-
+    # recent row in the events table. It is the second to most
+    # recent row because the code above already showed one more hand.
+    correct_answer = lookup_correct_answer(events_collection)
 
     # Calculate new player and hand ELO scores.
     user_was_correct = test_if_correct_answer(user_answer, correct_answer)
@@ -263,7 +304,3 @@ if user_answer not in [None, ""]:
         update = {"$set" : {"elo" : new_player_elo}}
         user_collection.update_one(query, update)
     
-    # Cache the correct answer to this current hand in answer.txt,
-    # so that when the page is reloaded the answer is preserved.
-    with open("data/answer.txt", "w") as of:
-        of.write(hand_json["correct_answer"])
