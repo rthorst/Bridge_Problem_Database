@@ -239,7 +239,11 @@ if user_answer not in [None, ""]:
     hands_collection.update_one(query, update)
 
     player_elo = new_player_elo
-
+    if username != "guest":
+        query = {"username" : username}
+        update = {"$set" : {"elo" : new_player_elo}}
+        user_collection.update_one(query, update)
+    
     # Cache the correct answer to this current hand in answer.txt,
     # so that when the page is reloaded the answer is preserved.
     with open("data/answer.txt", "w") as of:
