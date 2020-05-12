@@ -200,19 +200,26 @@ def log_showing_hand(hand_json, username, events_collection):
 
     return None
 
-def lookup_correct_answer(events_collection):
-    """Lookup the correct answer, from 2nd-most-recent row in events collection
+def lookup_correct_answer(events_collection, username):
+    """Lookup the correct answer
 
     Paramters:
     ----------
     events_collection (pymongo collection)
+    username (string)
 
     Returns:
     ----------
     correct_answer (string)
+
+    Strategy: the correct answer is the SECOND-most recent row
+    shown to this user. It is not the first row since the code executes
+    from top to bottom, thus a new hand was shown before the answer was 
+    looked up.
     """
 
-    events_sorted_by_timestamp = events_collection.find().sort(
+    params = {"username" : username}
+    events_sorted_by_timestamp = events_collection.find(params).sort(
             "timestamp", pymongo.DESCENDING)
     second_most_recent_event = events_sorted_by_timestamp[1]
 
@@ -276,7 +283,7 @@ if user_answer not in [None, ""]:
     # Lookup the correct answer, which is the second-to-most-
     # recent row in the events table. It is the second to most
     # recent row because the code above already showed one more hand.
-    correct_answer = lookup_correct_answer(events_collection)
+    correct_answer = lookup_correct_answer(events_collection, username)
 
     # Calculate new player and hand ELO scores.
     user_was_correct = test_if_correct_answer(user_answer, correct_answer)
