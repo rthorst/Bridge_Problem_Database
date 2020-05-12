@@ -1,5 +1,6 @@
 --> Big picture next step:
 * Then: add in a widget (to the right) where you can enter an auction.
+* Feed hands that are appropriate to your ELO, rather than random hands.
 
 Little things:
 --> Create a sensible way to automatically back up the hands database to JSO
