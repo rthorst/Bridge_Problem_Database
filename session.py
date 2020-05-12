@@ -149,7 +149,7 @@ def render_hands_in_streamlit(hand_json, hands_widget):
 
 
 def lookup_user_elo(username, user_collection):
-    """Lookup a user's ELO rating, returning 1200 for new users.
+    """Lookup a user's ELO rating.
 
     Parameters:
     -----------
