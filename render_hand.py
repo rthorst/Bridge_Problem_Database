@@ -1,5 +1,6 @@
 import textwrap
 import streamlit
+import numpy as np
 
 def render_single_hand(list_of_cards, hidden=False):
     """
@@ -159,6 +160,90 @@ def render_four_hands_with_context(list_of_hands, context="", hidden_hands=""):
     return rendered_hands
 
 
+def render_auction(auction_string, dealer):
+    """Render auction from string to markdown 
+
+    Parameters:
+    ------------
+    auction_string (string) e.g. "P P 1H P 2H P P P"
+    dealer (string) N S E or W
+
+    Returns:
+    ------------
+    auction_markdown (string) e.g.
+            N    E    S    W    
+            --------------------
+            P    P    1H   P
+            2H   P    P    P
+            P
+
+            Note that "H" here is coded as 
+            &#9825, etc.
+    """
+
+    # Replace suit letters with symbols. 
+    suit_letter_to_symbol = {
+            "C" : "&#9827;",
+            "D" : "&#9826;",
+            "H" : "&#9825;",
+            "S" : "&#9824;"
+    }
+    for suit_letter, suit_symbol in suit_letter_to_symbol.items():
+        auction_string.replace(suit_letter, suit_symbol)
+
+    # Split the auction into individual bids.
+    bids_list = auction_string.rstrip().split()
+
+    # Left-pad the bids with -- to beign the auction with North.
+    dealer_to_pad_amount = {
+        "N" : 0,
+        "E" : 1,
+        "S" : 2,
+        "W" : 3
+    }
+    for pad_amount in range(dealer_to_pad_amount[dealer]):
+        bids_list.insert(0, "--")
+
+    # Right-pad the auction with -- to end with east.
+    auction_length_mod_four = len(bids_list) % 4
+    remainder_to_pad_amount = {
+        0 : 0,
+        1 : 3,
+        2 : 2,
+        3 : 1
+    }
+    for pad_iteration in range(remainder_to_pad_amount[auction_length_mod_four]):
+        bids_list.append("--")
+    
+    # Right-pad each bid with whitespace to length of 5, where 
+    # symbols suit as &9827;
+    padded_bids_list = []
+    for bid in bids_list:
+
+        if "P" in bid: # covers P
+            padded_bid = bid + " "*4
+        else: # covers --, XC, XD XH, XS, XNT
+            padded_bid = bid + " "*3
+        
+        padded_bids_list.append(padded_bid)
+
+    # Reshape the bids list of a rectangular matrix of shape 
+    # (nrounds, 4). This is possible because the auction has been 
+    # left-and right-padded to have length % 4 = 0.
+    auction_rounds = int(len(padded_bids_list)/4)
+    rectangular_bids_list = np.reshape(padded_bids_list, (auction_rounds, 4))
+
+    # Render the auction as markdown with a header and lines of auction.
+    header = "N    E    S    W    \n"
+    header += "="*18
+    auction_markdown = header
+
+    for auction_row in rectangular_bids_list:
+        auction_string = "".join(auction_row)
+        auction_markdown += ("\n" + auction_string)
+
+    return auction_markdown
+
 if __name__ == "__main__":
 
     """
@@ -195,3 +280,8 @@ if __name__ == "__main__":
             hidden_hands=hidden_hands)
     print(rendered_hands_with_context)
 
+    # Render an auction as markdown.
+    dealer = "E"
+    auction = "1N 2S P 2N P 4S P P P"
+    rendered_auction = render_auction(auction, dealer)
+    print(rendered_auction)
