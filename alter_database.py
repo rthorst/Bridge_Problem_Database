@@ -146,8 +146,8 @@ def ask_for_hand():
               "West Hand (e.g. Q964 872 842 972):  ",
               "East Hand (e.g. J72 A63 93 KT652):  ",
               "Context (optional) e.g. contract and play:  ",
-              "Dealer (N S E or W)"
-              "Auction e.g. (P 1N P 2N P P P)"
+              "Dealer (N S E or W)",
+              "Auction e.g. (P 1N P 2N P P P)",
               "Correct Answer (case sensititive) e.g. H9 or H:  ",
               "Hidden Hands (optional) e.g. NSE or enter to continue:  ",
               "Notes (optional) e.g. From Bridgemaster Level 2 Problem 7:  "
