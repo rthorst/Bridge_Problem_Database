@@ -139,10 +139,15 @@ def render_hands_in_streamlit(hand_json, hands_widget):
     context = hand_json["context"]
     correct_answer = hand_json["correct_answer"]
     hidden_hands = hand_json["hidden_hands"]
+    auction_string = hand_json["auction"]
+    dealer_string = hand_json["dealer"]
+
     rendered_hands = render_four_hands_with_context(
             list_of_hands=list_of_hands, 
             context=context,
-            hidden_hands=hidden_hands 
+            hidden_hands=hidden_hands,
+            auction_string=auction_string,
+            dealer_string=dealer_string
             )
 
     hands_widget.markdown(rendered_hands, unsafe_allow_html=True)

@@ -61,19 +61,21 @@ def render_single_hand(list_of_cards, hidden=False):
 
     return rendered_hand
 
-def render_four_hands(list_of_hands, hidden_hands = ""):
+def render_four_hands(list_of_hands, hidden_hands = "",
+        dealer_string = "S", auction_string = ""):
     """
-    Render four hands as a string representation.
+    Render four hands with auction as a string representation.
 
     Parameters:
     --------------        
     list_of_hands, shape (4,)
         N, W, S, E hands.
-        each hand is a list of cards, e.g. ["CA", "D4", ...]
-    
+        each hand is a list of cards, e.g. ["CA", "D4", ...] 
     hidden_hands (str) e.g. "NE" or "" or "NSEW"
         hands to hide, specified as characters N, S, E, or W.
-    
+    dealer_string (string) e.g. "S"
+    auction_string (string) e.g. "P P 1H P P 2H P P P"
+
     Returns: 
     --------------
     rendered_hands  (string)
@@ -87,6 +89,10 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
     east_hidden = "E" in hidden_hands
     west_hidden = "W" in hidden_hands
     
+    # Render the auction as markdown based on auction string and dealer.
+    auction_rendered = render_auction(auction_string=auction_string,
+            dealer=dealer_string)
+
     # Render the individual hands, one at a time.
     rendered_hands = ""
     HAND_WIDTH = 10 # number of characters to pad each hand to.
@@ -100,24 +106,27 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
     # Render hands as HTML
     rendered_hands = """
     <table width="600" style="border: none">
-    <tr style="border: none">
-        <td width="33%" style="border: none"></td>
-        <td width="33%" style="border: none">{}</td>  
-        <td width="33%" style="border: none"></td>
+    <tr style="border: none" height="33%">
+        <td width="23%" style="border: none"></td>
+        <td width="23%" style="border: none">{}</td>  
+        <td width="23%" style="border: none"></td>
+        <td width="30%" style="border: none">{}</td>
     </tr>
-    <tr style="border: none">
-        <td width="33%" style="border: none">{}</td>
-        <td width="33%" style="border: none"></td>  
-        <td width="33%" style="border: none">{}</td>
+    <tr style="border: none" height="33%">
+        <td width="23%" style="border: none">{}</td>
+        <td width="23%" style="border: none"></td>  
+        <td width="23%" style="border: none">{}</td>
+        <td width="30%" style="border: none"></td>
     </tr>
-    <tr style="border: none">
+    <tr style="border: none" height="33%">
     </tr>
-        <td width="33%" style="border: none"></td>
-        <td width="33%" style="border: none">{}</td>  
-        <td width="33%" style="border: none"></td>
+        <td width="23%" style="border: none"></td>
+        <td width="23%" style="border: none">{}</td>  
+        <td width="23%" style="border: none"></td>
+        <td width="30%" style="border: none"></td>
     </table>
-    """.format(north_hand_rendered, west_hand_rendered, east_hand_rendered,
-               south_hand_rendered)
+    """.format(north_hand_rendered, auction_rendered, west_hand_rendered, 
+            east_hand_rendered, south_hand_rendered)
 
     # Remove extraneous line break at the left of the rendered hands.
     rendered_hands = rendered_hands.lstrip("\n")
@@ -127,7 +136,8 @@ def render_four_hands(list_of_hands, hidden_hands = ""):
 
     return rendered_hands 
 
-def render_four_hands_with_context(list_of_hands, context="", hidden_hands=""):
+def render_four_hands_with_context(list_of_hands, context="", hidden_hands="",
+        dealer_string="S", auction_string=""):
     """
     Render four hands as a string, with optional context.
 
@@ -140,6 +150,8 @@ def render_four_hands_with_context(list_of_hands, context="", hidden_hands=""):
         e.g. "Contract: 4S. West leads the club king. You win and play 
         which suit from dummy?"
     hidden_hands (string) e.g. "" or "NSWE" or "NS"
+    dealer_string (string) e.g. "S"
+    auction_string (string) e.g. "P P 1H P 2H P P P "
 
     Returns:
     --------------
@@ -148,7 +160,8 @@ def render_four_hands_with_context(list_of_hands, context="", hidden_hands=""):
 
     # Render the four hands as a hand diagram (string).
     rendered_hands = render_four_hands(list_of_hands=list_of_hands,
-            hidden_hands=hidden_hands)
+            hidden_hands=hidden_hands, dealer_string=dealer_string,
+            auction_string=auction_string)
 
     # Add the optional context below with leading whitespace.
     if len(context) > 0:
@@ -189,7 +202,7 @@ def render_auction(auction_string, dealer):
             "S" : "&#9824;"
     }
     for suit_letter, suit_symbol in suit_letter_to_symbol.items():
-        auction_string.replace(suit_letter, suit_symbol)
+        auction_string = auction_string.replace(suit_letter, suit_symbol)
 
     # Split the auction into individual bids.
     bids_list = auction_string.rstrip().split()
@@ -202,9 +215,9 @@ def render_auction(auction_string, dealer):
         "W" : 3
     }
     for pad_amount in range(dealer_to_pad_amount[dealer]):
-        bids_list.insert(0, "--")
+        bids_list.insert(0, "-")
 
-    # Right-pad the auction with -- to end with east.
+    # Right-pad the auction with - to end with east.
     auction_length_mod_four = len(bids_list) % 4
     remainder_to_pad_amount = {
         0 : 0,
@@ -213,34 +226,36 @@ def render_auction(auction_string, dealer):
         3 : 1
     }
     for pad_iteration in range(remainder_to_pad_amount[auction_length_mod_four]):
-        bids_list.append("--")
+        bids_list.append("-")
     
-    # Right-pad each bid with whitespace to length of 5, where 
-    # symbols suit as &9827;
-    padded_bids_list = []
-    for bid in bids_list:
-
-        if "P" in bid: # covers P
-            padded_bid = bid + " "*4
-        else: # covers --, XC, XD XH, XS, XNT
-            padded_bid = bid + " "*3
-        
-        padded_bids_list.append(padded_bid)
-
     # Reshape the bids list of a rectangular matrix of shape 
     # (nrounds, 4). This is possible because the auction has been 
     # left-and right-padded to have length % 4 = 0.
-    auction_rounds = int(len(padded_bids_list)/4)
-    rectangular_bids_list = np.reshape(padded_bids_list, (auction_rounds, 4))
+    auction_rounds = int(len(bids_list)/4)
+    rectangular_bids_list = np.reshape(bids_list, (auction_rounds, 4))
 
     # Render the auction as markdown with a header and lines of auction.
-    header = "N    E    S    W    \n"
-    header += "="*18
-    auction_markdown = header
-
+    auction_markdown = """
+    <table width="100%" style="border-spacing: 0px;">
+    <tr style="border : 0">
+        <td style="border: none">N</td>
+        <td style="border: none">E</td>
+        <td style="border: none">S</td>
+        <td style="border: none">W</td>
+    </tr>
+    """
     for auction_row in rectangular_bids_list:
-        auction_string = "".join(auction_row)
-        auction_markdown += ("\n" + auction_string)
+        
+        row_markdown = "<tr style='border: none'>\n"
+        for bid in auction_row:
+            bid_markdown = "<td style='border: none'>" + bid + "</td>\n"
+            row_markdown += bid_markdown
+        row_markdown += "</tr>\n"
+
+        auction_markdown += row_markdown
+
+    auction_markdown += "</table>"
+    print(auction_markdown)
 
     return auction_markdown
 
@@ -283,5 +298,6 @@ if __name__ == "__main__":
     # Render an auction as markdown.
     dealer = "E"
     auction = "1N 2S P 2N P 4S P P P"
+    auction = ""
     rendered_auction = render_auction(auction, dealer)
     print(rendered_auction)
