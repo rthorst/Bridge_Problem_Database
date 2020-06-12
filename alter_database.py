@@ -62,7 +62,20 @@ def validate_and_parse(key, value):
     if key in ["n_hand", "s_hand", "w_hand", "e_hand"]:
         # This function will raise an exception if the hand is invalid.
         parsed_value = parse_hand_string_to_list(value)
-    
+   
+    # Validate dealer: must be N, S, E, or W.
+    elif key == "dealer":
+        assert value in ["N", "S", "E", "W"]
+        parsed_value = value 
+
+    # Validate auction: currently simply check for string.
+    # TODO add more sophisticated validation that
+    # it is a legal auction.
+    elif key == "auction":
+
+        assert type(key) == type("")
+        parsed_value = value
+
     # Validate hidden hands: string with NSEW only.
     elif key == "hidden_hands":
     
