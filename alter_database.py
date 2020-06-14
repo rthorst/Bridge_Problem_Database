@@ -164,6 +164,9 @@ def ask_for_hand():
         # a listof 13 cards.
         value = validate_and_parse(key, value)
 
+        # Add a default elo of 1200
+        hand_json["elo"] = 1200
+
         # Add input to the json representation of the hand.
         hand_json[key] = value
 
