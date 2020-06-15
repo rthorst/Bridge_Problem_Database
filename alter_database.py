@@ -90,7 +90,8 @@ def validate_and_parse(key, value):
         parsed_value = value
 
     # Validate keys which simply must be strings.
-    elif key in ["context", "correct_answer", "notes", "hand_id"]:
+    elif key in ["notes", "correct_answer", "notes", "hand_id", "explanation", 
+            "source", "question"]:
         assert type(value) == type("aa"), NOT_STRING_ERROR
         parsed_value = value
     
@@ -139,19 +140,23 @@ def ask_for_hand():
     # Query the needed information.
     # Note that we assign a default ELO of 1200 to the hand
     # rather than allow the user to enter this information.
-    keys = ["n_hand", "s_hand", "w_hand", "e_hand", "context",
-            "dealer", "auction", "correct_answer", "hidden_hands", "notes"]
+    keys = ["n_hand", "s_hand", "w_hand", "e_hand", 
+            "question", "correct_answer", "explanation",
+            "dealer", "auction",
+            "source", "notes"]
+
     labels = ["North Hand (e.g. T83 KQT5 75 QJ38):  ",
               "South Hand (e.g. AK5 J94 AKQJT6 A):  ",
               "West Hand (e.g. Q964 872 842 972):  ",
               "East Hand (e.g. J72 A63 93 KT652):  ",
-              "Context (optional) e.g. contract and play:  ",
-              "Dealer (N S E or W)",
-              "Auction e.g. (P 1N P 2N P P P)",
-              "Correct Answer (case sensititive) e.g. H9 or H:  ",
-              "Hidden Hands (optional) e.g. NSE or enter to continue:  ",
-              "Notes (optional) e.g. From Bridgemaster Level 2 Problem 7:  "
-            ]
+              "Question (e.g. Which card do you lead?):  ",
+              "Correct Answer (case sensitive) e.g. H9 or H:    ",
+              "Explanation of Correct Answer (optional, enter for blank):    ",
+              "Dealer (N S E or W):    ",
+              "Auction starting w dealer e.g. (P 1N P 2N P P P):    ",
+              "Source (optional) description of problem source:    "
+              "Notes (optional) private notes about hand in database:    "]
+    
     for key, label in zip(keys, labels):
 
         # Get input from the user.
