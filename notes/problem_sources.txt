@@ -2,8 +2,6 @@
 
 Becoming a bridge expert --- 31 problems
 Kantar Teaches Advanced Bridge Defense --- 21 problems
-ACBL bulletin: Intermediate corner 2020 and 2019 and Column 
-	hands 2019 only  ----- 12 problems in ipad pictures
 David Bird Bridge tips: ~10 problems, not finished and need to add more.
 
 =============== SOURCES I WANT TO ADD ======================
@@ -18,4 +16,6 @@ Other books that I own.
 ==================== SOURCES ALREADY ADDED =====================
 
 Kantar For The Defense (all hands added: 23 total).
-
+ACBL Bulletin
+	Intermediate Corner Column: all 2020 and 2019 
+	Other Columns and Hands: all 2020 only

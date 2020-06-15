@@ -1,0 +1,7 @@
+-- Add a more flexible frontend, probably expressed in Flask. Advantages:
+	Much more control over the layout, to keep it to one page. 
+	The session logic is broken due to low control over how streamlit
+		refreshes during the session.
+	Better scalability.
+
+
