@@ -136,10 +136,10 @@ def render_four_hands(list_of_hands, hidden_hands = "",
 
     return rendered_hands 
 
-def render_four_hands_with_context(list_of_hands, context="", hidden_hands="",
+def render_four_hands_with_question(list_of_hands, question="", hidden_hands="",
         dealer_string="S", auction_string=""):
     """
-    Render four hands as a string, with optional context.
+    Render four hands as a string, with optional question
 
     Parameters:
     -------------
@@ -163,12 +163,12 @@ def render_four_hands_with_context(list_of_hands, context="", hidden_hands="",
             hidden_hands=hidden_hands, dealer_string=dealer_string,
             auction_string=auction_string)
 
-    # Add the optional context below with leading whitespace.
-    if len(context) > 0:
+    # Add the optional question below with leading whitespace.
+    if len(question) > 0:
 
-        context = context.lstrip()
-        justified_context = "\n".join(textwrap.wrap(context, 30))
-        rendered_hands += ("\n\n" + justified_context)
+        question = question.lstrip()
+        justified_question = "\n".join(textwrap.wrap(question, 30))
+        rendered_hands += ("\n\n" + justified_question)
 
     return rendered_hands
 

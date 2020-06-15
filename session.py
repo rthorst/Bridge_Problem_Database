@@ -1,7 +1,7 @@
 import os
 import json 
 import numpy as np
-from render_hand import render_four_hands_with_context
+from render_hand import render_four_hands_with_question
 import sqlite3
 import elo
 import pymongo
@@ -136,15 +136,15 @@ def render_hands_in_streamlit(hand_json, hands_widget):
             hand_json["s_hand"],
             hand_json["e_hand"]
             ]
-    context = hand_json["context"]
+    question = hand_json["question"]
     correct_answer = hand_json["correct_answer"]
     hidden_hands = hand_json["hidden_hands"]
     auction_string = hand_json["auction"]
     dealer_string = hand_json["dealer"]
 
-    rendered_hands = render_four_hands_with_context(
+    rendered_hands = render_four_hands_with_question(
             list_of_hands=list_of_hands, 
-            context=context,
+            question=question,
             hidden_hands=hidden_hands,
             auction_string=auction_string,
             dealer_string=dealer_string

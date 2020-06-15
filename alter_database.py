@@ -142,7 +142,8 @@ def ask_for_hand():
     # rather than allow the user to enter this information.
     keys = ["n_hand", "s_hand", "w_hand", "e_hand", 
             "question", "correct_answer", "explanation",
-            "dealer", "auction",
+            "dealer", "auction", 
+            "hidden_hands",
             "source", "notes"]
 
     labels = ["North Hand (e.g. T83 KQT5 75 QJ38):  ",
@@ -154,7 +155,8 @@ def ask_for_hand():
               "Explanation of Correct Answer (optional, enter for blank):    ",
               "Dealer (N S E or W):    ",
               "Auction starting w dealer e.g. (P 1N P 2N P P P):    ",
-              "Source (optional) description of problem source:    "
+              "Hidden Hands (e.g. SW or N, order does not matterr):    ",
+              "Source (optional) description of problem source:    ",
               "Notes (optional) private notes about hand in database:    "]
     
     for key, label in zip(keys, labels):
